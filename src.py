@@ -8,13 +8,13 @@ from PIL import Image
 app = Flask(__name__)
 
 # Ruta al modelo entrenado
-MODEL_PATH = '/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/App_IA/best_model.keras'
+MODEL_PATH = 'C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras'
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
 
-ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -49,18 +49,26 @@ def predict():
     if file.filename == '':
         return jsonify({'error': 'No file selected'}), 400
 
-    # Guardar el archivo temporalmente
-    file_path = os.path.join('uploads', file.filename)
-    os.makedirs('uploads', exist_ok=True)
+    # Guardar el archivo en la carpeta 'static/uploads' para que sea accesible desde la web
+    upload_folder = os.path.join('static', 'uploads')
+    os.makedirs(upload_folder, exist_ok=True)
+    file_path = os.path.join(upload_folder, file.filename)
     file.save(file_path)
 
     # Realizar la predicción
+    predicted_categories = []
     try:
-        predicted_categories, img_array = predict_image(model, file_path, threshold=0.2)
-        return jsonify({'predictions': predicted_categories})
-    finally:
-        # Eliminar el archivo temporal
-        os.remove(file_path)
+        predicted_categories, _ = predict_image(model, file_path, threshold=0.2)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+    # Retornar el template con la imagen y las predicciones
+    return render_template(
+        'index.html', 
+        uploaded_image=file.filename, 
+        predictions=predicted_categories
+    )
+
 
 # Ejecución del servidor Flask
 if __name__ == '__main__':

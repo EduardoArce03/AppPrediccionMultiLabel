@@ -3,14 +3,156 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Predicción de Imágenes</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Predicción Multi-Label</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+            text-align: center;
+        }
+    
+        h1 {
+            font-size: 2.5em;
+            margin-top: 20px;
+            color: #444;
+        }
+    
+        h2 {
+            font-size: 1.8em;
+            margin: 20px 0 10px;
+            color: #555;
+        }
+    
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+    
+        li {
+            background-color: #e6f7ff;
+            margin: 5px 0;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    
+        /* Upload Form */
+        .upload-form {
+            margin: 30px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            width: 300px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    
+        .upload-form input[type="file"] {
+            display: block;
+            margin: 10px auto;
+            padding: 5px;
+        }
+    
+        .upload-form button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+    
+        .upload-form button:hover {
+            background-color: #0056b3;
+        }
+    
+        /* Uploaded Image Section */
+        .uploaded-image {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            max-width: 80%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    
+        .uploaded-image img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+    
+        /* Results Section */
+        .results {
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            max-width: 80%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+    
+        .results ul {
+            margin: 0;
+            padding: 0;
+        }
+    
+        .results li {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+    
+        /* Footer (optional) */
+        footer {
+            margin-top: 20px;
+            font-size: 0.9em;
+            color: #666;
+        }
+    
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>    
 </head>
 <body>
-    <h1>Sube una imagen para predecir categorías</h1>
-    <form action="/predict" method="post" enctype="multipart/form-data">
+    <h1>Predicción Multi-Label</h1>
+    <form class="upload-form" action="/predict" method="POST" enctype="multipart/form-data">
         <input type="file" name="file" accept="image/*" required>
-        <button type="submit">Predecir</button>
+        <button type="submit">Subir y Predecir</button>
     </form>
+
+    <!-- Mostrar la imagen subida -->
+    {% if uploaded_image %}
+    <div class="uploaded-image">
+        <h2>Imagen Subida:</h2>
+        <img src="{{ url_for('static', filename='uploads/' + uploaded_image) }}" alt="Imagen subida">
+    </div>
+    {% endif %}
+
+    <!-- Mostrar los resultados de la predicción -->
+    {% if predictions %}
+    <div class="results">
+        <h2>Resultados de la Predicción:</h2>
+        <ul>
+            {% for prediction in predictions %}
+            <li>{{ prediction }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
 </body>
 </html>
