@@ -5,154 +5,201 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Predicción Multi-Label</title>
     <style>
-        /* General Styles */
+        /* Estilos generales */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f9f9f9;
-            color: #333;
-            text-align: center;
+            background-color: #000; /* Fondo negro puro */
+            color: #fff; /* Texto blanco */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
         }
     
         h1 {
-            font-size: 2.5em;
-            margin-top: 20px;
-            color: #444;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4cafef; /* Azul claro */
         }
     
         h2 {
-            font-size: 1.8em;
-            margin: 20px 0 10px;
-            color: #555;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #4cafef; /* Azul claro */
         }
     
+        button {
+            background-color: #0056b3; /* Azul intenso */
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    
+        button:hover {
+            background-color: #007bff; /* Azul más claro al pasar el cursor */
+        }
+    
+        /* Contenedores principales */
+        .main-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 20px;
+            width: 90%;
+            max-width: 1200px;
+        }
+    
+        .section {
+            flex: 1;
+            min-width: 300px;
+            background-color: #111; /* Fondo gris oscuro */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+    
+        /* Video y canvas */
+        video, canvas {
+            width: 100%;
+            max-width: 400px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+    
+        /* Imagen subida */
+        img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+        }
+    
+        /* Lista de predicciones */
         ul {
-            list-style-type: none;
+            list-style: none;
             padding: 0;
+            margin: 0;
         }
     
         li {
-            background-color: #e6f7ff;
-            margin: 5px 0;
+            background-color: #4cafef; /* Azul claro */
+            color: #000; /* Texto negro para contraste */
             padding: 10px;
+            margin: 5px 0;
             border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
     
-        /* Upload Form */
-        .upload-form {
-            margin: 30px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            width: 300px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        /* Botones */
+        .upload-form button, .camera-form button {
+            width: 100%;
+            margin: 10px 0;
         }
     
-        .upload-form input[type="file"] {
-            display: block;
-            margin: 10px auto;
-            padding: 5px;
-        }
-    
-        .upload-form button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-    
-        .upload-form button:hover {
-            background-color: #0056b3;
-        }
-    
-        /* Uploaded Image Section */
-        .uploaded-image {
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            max-width: 80%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    
-        .uploaded-image img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-    
-        /* Results Section */
-        .results {
-            margin: 20px auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            max-width: 80%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-    
-        .results ul {
-            margin: 0;
-            padding: 0;
-        }
-    
-        .results li {
-            font-size: 1.2em;
+        /* Mensajes de error */
+        .error {
+            color: red;
             font-weight: bold;
-            color: #333;
+            margin-top: 15px;
         }
     
-        /* Footer (optional) */
-        footer {
-            margin-top: 20px;
-            font-size: 0.9em;
-            color: #666;
-        }
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
     
-        footer a {
-            color: #007bff;
-            text-decoration: none;
-        }
+            h1 {
+                font-size: 2rem;
+            }
     
-        footer a:hover {
-            text-decoration: underline;
+            h2 {
+                font-size: 1.3rem;
+            }
+    
+            button {
+                font-size: 0.9rem;
+            }
         }
     </style>    
 </head>
 <body>
     <h1>Predicción Multi-Label</h1>
-    <form class="upload-form" action="/predict" method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <button type="submit">Subir y Predecir</button>
-    </form>
 
-    <!-- Mostrar la imagen subida -->
-    {% if uploaded_image %}
-    <div class="uploaded-image">
-        <h2>Imagen Subida:</h2>
-        <img src="{{ url_for('static', filename='uploads/' + uploaded_image) }}" alt="Imagen subida">
-    </div>
-    {% endif %}
+    <!-- Contenedor principal -->
+    <div class="main-container">
 
-    <!-- Mostrar los resultados de la predicción -->
-    {% if predictions %}
-    <div class="results">
-        <h2>Resultados de la Predicción:</h2>
-        <ul>
-            {% for prediction in predictions %}
-            <li>{{ prediction }}</li>
-            {% endfor %}
-        </ul>
+        <!-- Sección de la cámara -->
+        <div class="section camera-form">
+            <h2>Usa la Cámara</h2>
+            <video id="video" autoplay></video>
+            <canvas id="canvas"></canvas>
+            <button id="capture-btn">Tomar Foto</button>
+            <form id="camera-form" action="/predict" method="POST" enctype="multipart/form-data" style="display: none;">
+                <input type="hidden" id="image-data" name="image-data">
+                <button type="submit" id="submit-photo-btn">Predecir</button>
+            </form>
+        </div>
+
+        <!-- Sección de resultados e imagen subida -->
+        <div class="section results">
+            {% if uploaded_image %}
+            <h2>Imagen Subida</h2>
+            <img src="{{ url_for('static', filename='uploads/' + uploaded_image) }}" alt="Imagen subida">
+            {% endif %}
+
+            {% if predictions %}
+            <h2>Resultados de la Predicción</h2>
+            <ul>
+                {% for prediction in predictions %}
+                <li>{{ prediction }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+        </div>
+
     </div>
-    {% endif %}
+
+    <script>
+        // Configuración de la cámara
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureButton = document.getElementById('capture-btn');
+        const cameraForm = document.getElementById('camera-form');
+        const imageDataInput = document.getElementById('image-data');
+
+        // Acceso a la cámara
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error("Error al acceder a la cámara:", err);
+            });
+
+        // Captura de foto
+        captureButton.addEventListener('click', () => {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // Obtener la imagen como base64
+            const imageData = canvas.toDataURL('image/jpeg');
+            imageDataInput.value = imageData;
+
+            // Mostrar el botón para enviar la foto
+            cameraForm.style.display = 'block';
+        });
+    </script>
 </body>
 </html>
