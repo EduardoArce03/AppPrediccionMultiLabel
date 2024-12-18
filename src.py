@@ -10,13 +10,13 @@ from io import BytesIO
 app = Flask(__name__)
 
 # Ruta al modelo entrenado
-MODEL_PATH = 'C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras'
+MODEL_PATH = "C:/Universidad/IA/AppPrediccionMultiLabel/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
 
-ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "C:/Users/dcpor/Downloads/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -43,9 +43,8 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Verificar si se subió un archivo o una imagen de la cámara
+    # Verificar si se subió un archivo
     if 'file' in request.files:
-        # Procesar archivo subido
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400

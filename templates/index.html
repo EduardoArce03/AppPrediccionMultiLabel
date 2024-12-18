@@ -150,6 +150,15 @@
             </form>
         </div>
 
+        <!-- Sección para explorar archivos -->
+        <div class="section upload-form">
+            <h2>Sube una Imagen</h2>
+            <form action="/predict" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file" accept="image/*" required>
+                <button type="submit">Subir Imagen</button>
+            </form>
+        </div>
+
         <!-- Sección de resultados e imagen subida -->
         <div class="section results">
             {% if uploaded_image %}
