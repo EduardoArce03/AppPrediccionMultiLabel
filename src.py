@@ -3,6 +3,8 @@ import os
 import numpy as np
 from tensorflow.keras.models import load_model
 from PIL import Image
+import base64
+from io import BytesIO
 
 # Configuración del servidor Flask
 app = Flask(__name__)
@@ -41,19 +43,28 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    if 'file' not in request.files:
-        return jsonify({'error': 'No file uploaded'}), 400
+    # Verificar si se subió un archivo o una imagen de la cámara
+    if 'file' in request.files:
+        # Procesar archivo subido
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'error': 'No file selected'}), 400
 
-    # Obtener el archivo subido
-    file = request.files['file']
-    if file.filename == '':
-        return jsonify({'error': 'No file selected'}), 400
+        # Guardar el archivo en la carpeta 'static/uploads'
+        upload_folder = os.path.join('static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        file_path = os.path.join(upload_folder, file.filename)
+        file.save(file_path)
 
-    # Guardar el archivo en la carpeta 'static/uploads' para que sea accesible desde la web
-    upload_folder = os.path.join('static', 'uploads')
-    os.makedirs(upload_folder, exist_ok=True)
-    file_path = os.path.join(upload_folder, file.filename)
-    file.save(file_path)
+    elif 'image-data' in request.form:
+        # Procesar imagen de la cámara
+        image_data = request.form['image-data']
+        image_data = image_data.split(',')[1]  # Remover el encabezado de base64
+        image = Image.open(BytesIO(base64.b64decode(image_data)))
+        file_path = os.path.join('static', 'uploads', 'captured_image.jpg')
+        image.save(file_path)
+    else:
+        return jsonify({'error': 'No image data provided'}), 400
 
     # Realizar la predicción
     predicted_categories = []
@@ -65,10 +76,9 @@ def predict():
     # Retornar el template con la imagen y las predicciones
     return render_template(
         'index.html', 
-        uploaded_image=file.filename, 
+        uploaded_image=os.path.basename(file_path), 
         predictions=predicted_categories
     )
-
 
 # Ejecución del servidor Flask
 if __name__ == '__main__':
