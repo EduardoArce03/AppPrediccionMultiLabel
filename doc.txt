@@ -1,0 +1,5 @@
+1. Ir al directorio del front
+- Ejecutar cd frontend
+- Ejecutar npm i
+2. Como ahora vamos a dividir front y back necesito habilitar cors (Esto ya en el backporfavor)
+- pip install flask-cors

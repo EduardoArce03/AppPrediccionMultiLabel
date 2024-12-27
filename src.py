@@ -5,18 +5,24 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 import base64
 from io import BytesIO
+from flask_cors import CORS
+
 
 # Configuración del servidor Flask
 app = Flask(__name__)
 
+# Habilitar CORS
+CORS(app)
+
+
 # Ruta al modelo entrenado
-MODEL_PATH = "C:/Universidad/IA/AppPrediccionMultiLabel/best_model.keras"
+MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
 
-ANNOTATIONS_FILE = "C:/Users/dcpor/Downloads/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -43,41 +49,42 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Verificar si se subió un archivo
     if 'file' in request.files:
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
 
-        # Guardar el archivo en la carpeta 'static/uploads'
+        # Guardar el archivo
         upload_folder = os.path.join('static', 'uploads')
         os.makedirs(upload_folder, exist_ok=True)
         file_path = os.path.join(upload_folder, file.filename)
         file.save(file_path)
 
     elif 'image-data' in request.form:
-        # Procesar imagen de la cámara
         image_data = request.form['image-data']
         image_data = image_data.split(',')[1]  # Remover el encabezado de base64
         image = Image.open(BytesIO(base64.b64decode(image_data)))
+
+        # Asegurarse de que la imagen esté en modo RGB
+        if image.mode != 'RGB':
+            image = image.convert('RGB')  # Convertir a RGB para guardar como JPEG
+
         file_path = os.path.join('static', 'uploads', 'captured_image.jpg')
-        image.save(file_path)
+        image.save(file_path, 'JPEG')  # Especificar explícitamente el formato JPEG
+
+    
     else:
         return jsonify({'error': 'No image data provided'}), 400
 
     # Realizar la predicción
-    predicted_categories = []
     try:
         predicted_categories, _ = predict_image(model, file_path, threshold=0.2)
+        # Log de las predicciones en la consola
+        print(f"Predicciones realizadas: {predicted_categories}")
+        return jsonify({'predictions': predicted_categories})
+        
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-    # Retornar el template con la imagen y las predicciones
-    return render_template(
-        'index.html', 
-        uploaded_image=os.path.basename(file_path), 
-        predictions=predicted_categories
-    )
 
 # Ejecución del servidor Flask
 if __name__ == '__main__':

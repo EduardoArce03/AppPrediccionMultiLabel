@@ -1,0 +1,126 @@
+
+    <p-toast 
+        position="top-center" 
+        key="confirm" 
+        (onClose)="onClose()" 
+        [baseZIndex]="5000">
+            <ng-template let-message pTemplate="headless" let-closeFn="closeFn">
+                <section class="flex p-3 gap-3 w-full bg-black-alpha-90 shadow-2" style="border-radius: 10px">
+                    <i class="pi pi-cloud-upload text-primary-500 text-2xl"></i>
+                    <div class="flex flex-column gap-3 w-full">
+                        <p class="m-0 font-semibold text-base text-white">
+                            {{ message.summary }}
+                        </p>
+                        <p class="m-0 text-base text-700">
+                            {{ message.detail }}
+                        </p>
+                        <div class="flex flex-column gap-2">
+                            <p-progressBar 
+                                [value]="progress" 
+                                [showValue]="false" 
+                                [style]="{ height: '4px' }" />
+                            <label class="text-right text-xs text-white">
+                                {{ progress }}% uploaded...
+                            </label>
+                        </div>
+                        <div class="flex gap-3 mb-3">
+                            <p-button 
+                                label="Subir otra imagen?" 
+                                [text]="true" 
+                                styleClass="p-0" 
+                                (onClick)="onClose()" />
+                            <p-button 
+                                label="Cancelar" 
+                                [text]="true" 
+                                styleClass="text-white p-0" 
+                                (onClick)="onClose()" />
+                        </div>
+                    </div>
+                </section>
+            </ng-template>
+    </p-toast>
+
+
+
+<div class="card flex justify-content-center">
+    <div class="w-6">
+        <p-accordion [activeIndex]="0">
+            <p-accordionTab header="1. Tomar Foto">
+                <h2 class="p-mb-4">Usa la Cámara</h2>
+
+                <!-- Contenedor del video con diseño redondeado y sombras -->
+                <div class="camera-view-container p-shadow-4 p-p-3 p-mb-4">
+                    <video #videoElement autoplay class="p-fluid rounded-video"></video>
+                </div>
+            
+                <!-- Canvas para la foto capturada -->
+                <canvas #canvasElement class="photo-preview p-shadow-4 rounded-canvas p-d-none"></canvas>
+            
+                <!-- Botones con un diseño atractivo -->
+                <div class="button-group p-d-flex p-jc-center p-gap-3">
+                    <!-- Botón para capturar la foto -->
+                    <button (click)="capturePhoto()" class="p-button p-button-rounded p-button-outlined p-button-success">
+                        <i class="pi pi-camera"></i>
+                        <span>Tomar Foto</span>
+                    </button>
+                    <!-- Botón para enviar la imagen capturada -->
+                    <button *ngIf="capturedImage" (click)="predictImage()" class="p-button p-button-rounded p-button-info">
+                        <i class="pi pi-cloud-upload"></i>
+                        <span>Predecir</span>
+                    </button>
+                </div>
+            </p-accordionTab>
+            <p-accordionTab header="2. Imagen Capturada">
+                    <!-- Mostrar la imagen capturada -->
+                    <div *ngIf="capturedImage" class="p-mt-4 captured-image-container p-shadow-4">
+                        <h3>Imagen Capturada:</h3>
+                        <img [src]="capturedImage" alt="Imagen capturada" class="rounded-image" />
+                    </div>
+            </p-accordionTab>
+            <p-accordionTab header="3. Predicciones">
+                <!-- Mostrar las predicciones 
+                <div *ngIf="predictions.length > 0" class="p-mt-4 predictions-container">
+                    <h3 class="p-mb-3">Predicciones:</h3>
+                    <ul class="p-pl-3">
+                        <li *ngFor="let prediction of predictions" class="prediction-item">
+                            <i class="pi pi-check-circle p-mr-2"></i>{{ prediction }}
+                        </li>
+                    </ul>
+                </div>-->
+                <p>{{selectedSize.class}}</p>
+                <div class="card">
+                    <div class="flex justify-content-center mb-3">
+                        <p-selectButton 
+                            [options]="sizes" 
+                            [(ngModel)]="selectedSize"
+                            [multiple]="false" 
+                            optionLabel="name" 
+                            optionValue="class"
+
+                            />
+                    </div>
+                    
+                    <p-table  [ngClass]="selectedSize.class" [tableStyle]="{ 'min-width': '50rem' }" [styleClass]="selectedSize.class" [value]="predictions" [paginator]="true" [rows]="5">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>#</th>
+                                <th>Predicción</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-prediction let-index="rowIndex">
+                            <tr>
+                                <td>{{ index + 1 }}</td> <!-- Número de la predicción -->
+                                <td>{{ prediction }}</td> <!-- Predicción -->
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+                
+            </p-accordionTab>
+        </p-accordion>
+    </div>
+</div>
+<p-toast/>
+
+  
+
