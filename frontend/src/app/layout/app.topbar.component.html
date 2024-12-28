@@ -13,14 +13,35 @@
     </button>
 
     <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-        <button class="p-link layout-topbar-button">
+        <button class="p-link layout-topbar-button" (onClick)="op.toggle($event)">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
         </button>
-        <button class="p-link layout-topbar-button">
+        <button class="p-link layout-topbar-button" (click)="op.toggle($event)">
             <i class="pi pi-user"></i>
-            <span>Profile</span>
+            <span>{{ isAuthenticated ? user?.name : 'Profile' }}</span>
         </button>
+        <p-overlayPanel #op>
+            <div class="flex flex-column gap-3 p-3" style="width: 300px;">
+                <ng-container *ngIf="isAuthenticated; else notLoggedIn">
+                    <!-- Opciones para usuarios logueados -->
+                    <div class="text-center mb-3">
+                        <span class="font-bold text-lg">Hola, {{ user?.name }}</span>
+                        <p class="text-sm text-600">¡Bienvenido de nuevo!</p>
+                    </div>
+                    <button pButton type="button" label="Cerrar Sesión" class="p-button-danger w-full" (click)="logout()"></button>
+                </ng-container>
+                <ng-template #notLoggedIn>
+                    <!-- Opciones para usuarios no logueados -->
+                    <div class="text-center mb-3">
+                        <span class="font-bold text-lg">Bienvenido</span>
+                        <p class="text-sm text-600">Por favor, inicia sesión o regístrate</p>
+                    </div>
+                    <button pButton type="button" label="Iniciar Sesión" class="p-button-primary w-full mb-2" (click)="login()"></button>
+                    <button pButton type="button" label="Registrarse" class="p-button-outlined w-full" (click)="register()"></button>
+                </ng-template>
+            </div>
+        </p-overlayPanel>        
         <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
             <i class="pi pi-cog"></i>
             <span>Settings</span>

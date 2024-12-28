@@ -13,6 +13,7 @@ import { NodeService } from './demo/service/node.service';
 import { PhotoService } from './demo/service/photo.service';
 import { PredictionService } from './demo/service/prediction.service';
 import { HttpClientModule  } from '@angular/common/http';
+import { AuthService } from './demo/service/auth.service';
 
 @NgModule({
     declarations: [AppComponent, NotfoundComponent],
@@ -20,7 +21,7 @@ import { HttpClientModule  } from '@angular/common/http';
     providers: [
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, PredictionService
+        PhotoService, ProductService, PredictionService, AuthService
     ],
     bootstrap: [AppComponent],
 })

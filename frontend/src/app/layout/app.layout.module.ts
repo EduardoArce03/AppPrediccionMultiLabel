@@ -17,6 +17,12 @@ import { AppFooterComponent } from './app.footer.component';
 import { AppConfigModule } from './config/config.module';
 import { AppSidebarComponent } from "./app.sidebar.component";
 import { AppLayoutComponent } from "./app.layout.component";
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { InputGroupModule } from 'primeng/inputgroup';
+import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { ButtonModule } from 'primeng/button';
+import { ChipsModule } from 'primeng/chips';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     declarations: [
@@ -39,7 +45,13 @@ import { AppLayoutComponent } from "./app.layout.component";
         InputSwitchModule,
         RippleModule,
         RouterModule,
-        AppConfigModule
+        AppConfigModule,
+        OverlayPanelModule,
+        InputGroupModule,
+        InputGroupAddonModule,
+        ButtonModule,
+        ChipsModule,
+        CommonModule
     ],
     exports: [AppLayoutComponent]
 })

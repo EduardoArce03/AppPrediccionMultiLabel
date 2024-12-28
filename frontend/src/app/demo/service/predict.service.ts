@@ -11,8 +11,12 @@ export class PredictService {
   constructor(private http: HttpClient) { }
   // Método para predecir un archivo  
   predictFile(file: File): Observable<any> {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const userId = user.id;
+
     const formData = new FormData();
     formData.append('file', file);
+    formData.append('userId', userId);
     return this.http.post(`${environment.apiUrl}/predict`, formData);
   }
   // Método para predecir una imagen w cam
