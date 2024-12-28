@@ -14,13 +14,13 @@ export class CamComponent {
 
   capturedImage: string | null = null;
   predictions: string[] = [];
-  visible : boolean = false;
-  progress : number = 0;
+  visible: boolean = false;
+  progress: number = 0;
   interval = null;
   sizes!: any[];
-  selectedSize : any = '';
+  selectedSize: any = '';
 
-  constructor(private predictionService: PredictService, private message : MessageService, private cdr: ChangeDetectorRef) {}
+  constructor(private predictionService: PredictService, private message: MessageService, private cdr: ChangeDetectorRef) { }
 
   ngAfterViewInit(): void {
     // Acceder a la cámara
@@ -49,26 +49,26 @@ export class CamComponent {
     this.showConfirm();
     const canvas = this.canvasElement.nativeElement;
     const video = this.videoElement.nativeElement;
-    
+
     // Configurar el canvas para capturar y redimensionar la imagen
     const desiredWidth = 256; // Ancho deseado
     const desiredHeight = 256; // Alto deseado
     canvas.width = desiredWidth;
     canvas.height = desiredHeight;
-  
+
     const context = canvas.getContext('2d');
     if (context) {
       context.drawImage(video, 0, 0, desiredWidth, desiredHeight);
       this.capturedImage = canvas.toDataURL('image/png'); // Convertir a base64
     }
   }
-  
+
 
   predictImage(): void {
     if (this.capturedImage) {
       this.predictionService.predictImage(this.capturedImage).subscribe(
         (response) => {
-          this.predictions = response.predictions;
+          this.predictions = response.predictions;  // Las predicciones vienen del backend
           console.log('Predicciones:', this.predictions);
           this.showSuccess();
           this.showInfo();
@@ -81,7 +81,6 @@ export class CamComponent {
       );
     }
   }
-
 
   showSuccess() {
     this.message.add({ severity: 'success', summary: 'Success', detail: 'Predicciones realizadas con exito !' });
@@ -102,25 +101,25 @@ export class CamComponent {
 
   showConfirm() {
     if (!this.visible) {
-        this.message.add({ key: 'confirm', sticky: true, severity: 'custom', summary: 'Subiendo tu imagen.' });
-        this.visible = true;
-        this.progress = 0;
+      this.message.add({ key: 'confirm', sticky: true, severity: 'custom', summary: 'Subiendo tu imagen.' });
+      this.visible = true;
+      this.progress = 0;
 
-        if (this.interval) {
-            clearInterval(this.interval);
+      if (this.interval) {
+        clearInterval(this.interval);
+      }
+
+      this.interval = setInterval(() => {
+        if (this.progress <= 100) {
+          this.progress = this.progress + 20;
         }
 
-        this.interval = setInterval(() => {
-            if (this.progress <= 100) {
-                this.progress = this.progress + 20;
-            }
-
-            if (this.progress >= 100) {
-                this.progress = 100;
-                clearInterval(this.interval);
-            }
-            this.cdr.markForCheck();
-        }, 1000);
+        if (this.progress >= 100) {
+          this.progress = 100;
+          clearInterval(this.interval);
+        }
+        this.cdr.markForCheck();
+      }, 1000);
     }
-  } 
+  }
 }

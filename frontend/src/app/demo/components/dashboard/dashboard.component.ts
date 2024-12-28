@@ -4,6 +4,7 @@ import { Product } from '../../api/product';
 import { ProductService } from '../../service/product.service';
 import { Subscription, debounceTime } from 'rxjs';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
+import { PredictionService } from '../../service/prediction.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -11,6 +12,8 @@ import { LayoutService } from 'src/app/layout/service/app.layout.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
     items!: MenuItem[];
+
+    recentPredictions: any[] = [];
 
     products!: Product[];
 
@@ -20,16 +23,17 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     subscription!: Subscription;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService) {
+    constructor(private productService: ProductService, public layoutService: LayoutService, private predictionService: PredictionService) {
         this.subscription = this.layoutService.configUpdate$
-        .pipe(debounceTime(25))
-        .subscribe((config) => {
-            this.initChart();
-        });
+            .pipe(debounceTime(25))
+            .subscribe((config) => {
+                this.initChart();
+            });
     }
 
     ngOnInit() {
         this.initChart();
+        this.loadRecentPredictions();
         this.productService.getProductsSmall().then(data => this.products = data);
 
         this.items = [
@@ -101,5 +105,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
         if (this.subscription) {
             this.subscription.unsubscribe();
         }
+    }
+
+    loadRecentPredictions() {
+        this.predictionService.getRecentPredictions().subscribe(
+            (data) => {
+                this.recentPredictions = data.predictions;
+            },
+            (error) => {
+                console.error('Error fetching recent predictions:', error);
+            }
+        );
     }
 }
