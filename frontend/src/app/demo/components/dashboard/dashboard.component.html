@@ -69,6 +69,7 @@
             <p-table [value]="recentPredictions" [paginator]="true" [rows]="5" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
                     <tr>
+                        <th>Usuario</th>
                         <th>Imagen</th>
                         <th pSortableColumn="timestamp">Fecha <p-sortIcon field="timestamp"></p-sortIcon></th>
                         <th>Peso Imagen</th>
@@ -77,6 +78,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-prediction>
                     <tr>
+                        <td>{{prediction.user_name}}</td>
                         <td style="width: 15%; min-width: 5rem;">
                             <img [src]="prediction.image_url" class="shadow-4" alt="Predicción" width="50">
                         </td>

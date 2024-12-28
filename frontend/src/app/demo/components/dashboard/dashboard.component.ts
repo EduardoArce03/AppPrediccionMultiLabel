@@ -40,6 +40,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
             { label: 'Remove', icon: 'pi pi-fw pi-minus' }
         ];
+
+        console.log('Usuario', localStorage.getItem('user'));
+
     }
 
     initChart() {

@@ -73,6 +73,13 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    
+    data = request.get_json() if request.is_json else request.form
+    user_id = data.get('user_id')
+
+    if not user_id:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
+    
     if 'file' in request.files:
         file = request.files['file']
         if file.filename == '':
@@ -106,39 +113,73 @@ def predict():
 
         # Guardar la imagen y las predicciones en la base de datos
         image_url = file_path  # O usa una URL pública si la imagen se encuentra en un servidor
-        save_prediction_to_db(image_url, predicted_categories)
+        save_prediction_to_db(image_url, predicted_categories, user_id)
         
         return jsonify({'predictions': predicted_categories})
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/recent-predictions/user', methods=['GET'])
+def get_recent_predictions_user():
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            cursor.execute("""
+                SELECT p.image_url, p.predictions, p.timestamp, u.name AS user_name
+                FROM predictions p
+                JOIN users u ON p.user_id = u.id
+                ORDER BY p.timestamp DESC
+                LIMIT 5
+            """)
+            rows = cursor.fetchall()
+
+        conn.close()
+
+        predictions_data = [
+            {
+                'image_url': row[0],
+                'predictions': row[1],
+                'timestamp': row[2],
+                'user_name': row[3]
+            } for row in rows
+        ]
+
+        return jsonify({'predictions': predictions_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @app.route('/recent-predictions', methods=['GET'])
 def get_recent_predictions():
     try:
-        # Conectar a la base de datos (asegúrate de tener la conexión configurada)
-        conn = psycopg2.connect("dbname=postgres user=postgres password=edu123 host=localhost port=5432")
-        cursor = conn.cursor()
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # Seleccionar las predicciones recientes de todos los usuarios !!
+            cursor.execute("""
+                SELECT p.image_url, p.predictions, p.timestamp, u.name AS user_name
+                FROM predictions p
+                JOIN users u ON p.user_id = u.id
+                ORDER BY p.timestamp DESC
+                LIMIT 10
+            """)
+            rows = cursor.fetchall()
 
-        # Consultar las últimas 5 predicciones
-        cursor.execute("SELECT image_url, predictions, timestamp FROM predictions ORDER BY timestamp DESC")
-        rows = cursor.fetchall()
-
-        predictions_data = []
-        for row in rows:
-            predictions_data.append({
-                'image_url': row[0],
-                'predictions': row[1],
-                'timestamp': row[2]
-            })
-
-        cursor.close()
         conn.close()
 
-        return jsonify({'predictions': predictions_data})
+        predictions_data = [
+            {
+                'image_url': row[0],
+                'predictions': row[1],
+                'timestamp': row[2],
+                'user_name': row[3]
+            } for row in rows
+        ]
 
+        return jsonify({'predictions': predictions_data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
     
 # LOGICA DE AUTENTICACION (REGISTRO Y LOGEO)
 
