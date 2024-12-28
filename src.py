@@ -120,7 +120,7 @@ def get_recent_predictions():
         cursor = conn.cursor()
 
         # Consultar las últimas 5 predicciones
-        cursor.execute("SELECT image_url, predictions, timestamp FROM predictions ORDER BY timestamp DESC LIMIT 5")
+        cursor.execute("SELECT image_url, predictions, timestamp FROM predictions ORDER BY timestamp DESC")
         rows = cursor.fetchall()
 
         predictions_data = []

@@ -25,7 +25,7 @@ export class AppMenuComponent implements OnInit {
                 items: [
                     
                     { label: 'Prediccion con camara', icon: 'pi pi-fw pi-exclamation-circle', routerLink: ['/pages/cam'] },
-                    { label: 'Prediccion con archivo', icon: 'pi pi-fw pi-file', routerLink: ['/uikit/charts']}
+                    { label: 'Prediccion con archivo', icon: 'pi pi-fw pi-file', routerLink: ['/pages/file']}
                 ]
             },
             {
