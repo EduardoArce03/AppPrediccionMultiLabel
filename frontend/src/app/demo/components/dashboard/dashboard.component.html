@@ -72,7 +72,7 @@
                         <th>Usuario</th>
                         <th>Imagen</th>
                         <th pSortableColumn="timestamp">Fecha <p-sortIcon field="timestamp"></p-sortIcon></th>
-                        <th>Peso Imagen</th>
+                        <th>Prediccion</th>
                         <th>Ver</th>
                     </tr>
                 </ng-template>
@@ -89,6 +89,13 @@
                                 class="p-button p-component p-button-text p-button-icon-only"></button>
                         </td>
                     </tr>
+                    <p-dialog [(visible)]="displayModal" [header]="'Detalles de la Predicción'" [modal]="true" [closable]="true" [responsive]="true">
+                        <ng-template pTemplate="content">
+                            <p><strong>Fecha:</strong> {{prediction.timestamp}}</p>
+                            <p><strong>Peso Imagen:</strong> {{prediction.timestamp}}</p>
+                            <img [src]="'assets/demo/images/product/' + selectedProduct?.image" alt="Imagen" width="100">
+                        </ng-template>
+                    </p-dialog>                    
                 </ng-template>
             </p-table>
 
@@ -186,9 +193,12 @@
     </div>
 
     <div class="col-12 xl:col-6">
+
         <div class="card">
-            <h5>Metricas de Modelo</h5>
-            <img src="assets/demo/images/galleria/precision.png" alt="">
+            <h5>Metricas del modelo</h5>
+            <div class="card flex flex-column md:flex-row align-items-center justify-content-center gap-5">
+                <img src="assets/demo/images/galleria/precision.png" alt="Precision" class="w-full md:w-6 md:h-auto">
+            </div>
         </div>
 
         <div class="card">

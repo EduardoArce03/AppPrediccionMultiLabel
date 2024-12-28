@@ -23,6 +23,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     subscription!: Subscription;
 
+    selectedProduct: any;
+    displayModal: boolean = false;
+
     constructor(private productService: ProductService, public layoutService: LayoutService, private predictionService: PredictionService) {
         this.subscription = this.layoutService.configUpdate$
             .pipe(debounceTime(25))
@@ -120,4 +123,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         );
     }
+
+
+
+    viewPrediction(product: any): void {
+        this.selectedProduct = product;
+        this.displayModal = true;
+    }
+
 }

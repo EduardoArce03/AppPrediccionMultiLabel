@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 import os
 import numpy as np
 from tensorflow.keras.models import load_model
@@ -8,7 +8,7 @@ from io import BytesIO
 from flask_cors import CORS
 import psycopg2  # Para conexión a la base de datos
 from werkzeug.security import generate_password_hash, check_password_hash
-
+from uuid import uuid4
 # Configuración del servidor Flask
 app = Flask(__name__)
 
@@ -73,23 +73,27 @@ def home():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    
     data = request.get_json() if request.is_json else request.form
     user_id = data.get('user_id')
 
     if not user_id:
         return jsonify({'error': 'Usuario no autenticado'}), 401
     
+    # Validar si se envió un archivo o una imagen codificada en base64
     if 'file' in request.files:
         file = request.files['file']
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
 
-        # Guardar el archivo
+        # Generar un nombre único para el archivo
+        unique_filename = f"{uuid4().hex}_{file.filename}"
         upload_folder = os.path.join('static', 'uploads')
         os.makedirs(upload_folder, exist_ok=True)
-        file_path = os.path.join(upload_folder, file.filename)
+        file_path = os.path.join(upload_folder, unique_filename)
         file.save(file_path)
+
+        # Generar la URL pública para el archivo
+        image_url = f"http://localhost:5000/{file_path.replace(os.path.sep, '/')}"
 
     elif 'image-data' in request.form:
         image_data = request.form['image-data']
@@ -100,9 +104,15 @@ def predict():
         if image.mode != 'RGB':
             image = image.convert('RGB')  # Convertir a RGB para guardar como JPEG
 
-        file_path = os.path.join('static', 'uploads', 'captured_image.jpg')
+        # Generar un nombre único para el archivo
+        unique_filename = f"{uuid4().hex}.jpg"
+        upload_folder = os.path.join('static', 'uploads')
+        os.makedirs(upload_folder, exist_ok=True)
+        file_path = os.path.join(upload_folder, unique_filename)
         image.save(file_path, 'JPEG')  # Especificar explícitamente el formato JPEG
-    
+
+        # Generar la URL pública para el archivo
+        image_url = f"http://localhost:5000/static/uploads/{unique_filename}"
     else:
         return jsonify({'error': 'No image data provided'}), 400
 
@@ -112,7 +122,6 @@ def predict():
         print(f"Predicciones realizadas: {predicted_categories}")
 
         # Guardar la imagen y las predicciones en la base de datos
-        image_url = file_path  # O usa una URL pública si la imagen se encuentra en un servidor
         save_prediction_to_db(image_url, predicted_categories, user_id)
         
         return jsonify({'predictions': predicted_categories})
@@ -231,6 +240,14 @@ def login():
             return jsonify({'error': 'Correo o contraseña incorrectos'}), 401
     except Exception as e:
         return jsonify({'error': f'Error al iniciar sesión: {str(e)}'}), 500
+
+
+# enviar la imagen al frontend
+
+@app.route('/static/uploads/<path:filename>')
+def serve_uploaded_file(filename):
+    return send_from_directory('static/uploads', filename)
+
 
 # Ejecución del servidor Flask
 if __name__ == '__main__':

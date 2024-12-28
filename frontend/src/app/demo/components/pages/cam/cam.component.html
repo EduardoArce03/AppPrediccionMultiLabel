@@ -48,10 +48,11 @@
             <p-accordionTab header="1. Tomar Foto">
                 <h2 class="p-mb-4">Usa la Cámara</h2>
 
-                <!-- Contenedor del video con diseño redondeado y sombras -->
-                <div class="camera-view-container p-shadow-4 p-p-3 p-mb-4">
-                    <video #videoElement autoplay class="p-fluid rounded-video"></video>
+                <!-- Contenedor del video con diseño responsivo -->
+                <div class="camera-view-container flex align-items-center justify-content-center p-shadow-4 p-p-3 p-mb-4">
+                    <video #videoElement autoplay class="p-fluid rounded-video w-full sm:w-10 md:w-8 lg:w-6 h-auto"></video>
                 </div>
+
             
                 <!-- Canvas para la foto capturada -->
                 <canvas #canvasElement class="photo-preview p-shadow-4 rounded-canvas p-d-none"></canvas>
