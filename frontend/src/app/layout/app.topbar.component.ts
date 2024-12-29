@@ -39,7 +39,7 @@ export class AppTopBarComponent implements OnInit {
     
       register() {
         console.log('Redirigiendo al formulario de registro...');
-        // Aquí puedes redirigir a la página de registro o abrir un modal
+        this.router.navigate(['/auth/register']);
       }
 
       logout() {
