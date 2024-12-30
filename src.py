@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 import os
 import numpy as np
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model # type: ignore
 from PIL import Image
 import base64
 from io import BytesIO
@@ -16,12 +16,12 @@ app = Flask(__name__)
 CORS(app)
 
 # Ruta al modelo entrenado
-MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
+MODEL_PATH = "best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
-ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "C:/Users/dcpor/Downloads/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
