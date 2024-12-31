@@ -30,4 +30,13 @@ CREATE TABLE users (
 
 5. Modificacion en la tabla predictions: Agregamos la asociacion entre usuario y prediccion: ALTER TABLE predictions ADD COLUMN user_id INT REFERENCES users(id) ON DELETE CASCADE;
 
+6. Modificacion en bd, se agrega el campo audio_url: ALTER TABLE predictions ADD COLUMN audio_url TEXT;
 
+7. PARA USO DE LA API DE GOOGLE:
+- pip install google-cloud-texttospeech
+
+8. Sincronizar dependencias: pip install google-cloud-texttospeech protobuf==3.20.*
+
+**ADICIONALES**
+
+- ENTRAR A BD EN LINUX CON USUARIO POSTGRES: psql -U postgres -d mi_base -h localhost -p 5432

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, send_from_directory
 import os
 import numpy as np
-from tensorflow.keras.models import load_model # type: ignore
+from tensorflow.keras.models import load_model
 from PIL import Image
 import base64
 from io import BytesIO
@@ -16,12 +16,12 @@ app = Flask(__name__)
 CORS(app)
 
 # Ruta al modelo entrenado
-MODEL_PATH = "best_model.keras"
+MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
-ANNOTATIONS_FILE = "C:/Users/dcpor/Downloads/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -33,7 +33,7 @@ def get_db_connection():
     conn = psycopg2.connect(
         dbname='postgres', 
         user='postgres', 
-        password='postgres', 
+        password='edu123', 
         host='localhost', 
         port='5432'
     )
@@ -53,13 +53,13 @@ def predict_image(model, image_path, threshold=0.5):
     return predicted_categories, img_array[0]
 
 # Ruta para guardar los resultados de predicción y la imagen
-def save_prediction_to_db(image_url, predictions, user_id):
+def save_prediction_to_db(image_url, predictions, user_id, audio_url):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO predictions(image_url, predictions, user_id) VALUES (%s, %s, %s)",
-                (image_url, ", ".join(predictions), user_id)  # Guardar las predicciones como texto
+                "INSERT INTO predictions(image_url, predictions, user_id, audio_url) VALUES (%s, %s, %s, %s)",
+                (image_url, ", ".join(predictions), user_id, audio_url)  # Guardar las predicciones como texto
             )
             conn.commit()
         conn.close()
@@ -78,7 +78,7 @@ def predict():
 
     if not user_id:
         return jsonify({'error': 'Usuario no autenticado'}), 401
-    
+
     # Validar si se envió un archivo o una imagen codificada en base64
     if 'file' in request.files:
         file = request.files['file']
@@ -121,11 +121,18 @@ def predict():
         predicted_categories, _ = predict_image(model, file_path, threshold=0.2)
         print(f"Predicciones realizadas: {predicted_categories}")
 
-        # Guardar la imagen y las predicciones en la base de datos
-        save_prediction_to_db(image_url, predicted_categories, user_id)
+        # Generar el audio con las predicciones
+        audio_filename = generate_audio(predicted_categories)
         
-        return jsonify({'predictions': predicted_categories})
+        audio_url = f"http://localhost:5000/{audio_filename}"
+                # Guardar la imagen y las predicciones en la base de datos
+        save_prediction_to_db(image_url, predicted_categories, user_id, audio_url)
         
+        return jsonify({
+            'predictions': predicted_categories,
+            'audio_url': audio_url
+            })
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
@@ -189,7 +196,7 @@ def get_recent_predictions():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-    
+
 # LOGICA DE AUTENTICACION (REGISTRO Y LOGEO)
 
 @app.route('/register', methods=['POST'])
@@ -248,6 +255,35 @@ def login():
 def serve_uploaded_file(filename):
     return send_from_directory('static/uploads', filename)
 
+#API SPEECH TO TEXT
+from google.cloud import texttospeech
+import os
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'project_clv.json'
+client = texttospeech.TextToSpeechClient()
+def generate_audio(predictions):
+    predicted_objects = ', '.join(predictions)
+    text = f"Los objetos detectados en la imagen son: {predicted_objects}"
+    
+    synthesis_input = texttospeech.SynthesisInput(text=text)
+    
+    voice = texttospeech.VoiceSelectionParams(
+        language_code="es-ES",
+        name="es-ES-Standard-A",
+    )
+    
+    audio_config = texttospeech.AudioConfig(
+        audio_encoding=texttospeech.AudioEncoding.MP3
+    )
+    
+    response = client.synthesize_speech(
+        input=synthesis_input, voice=voice, audio_config=audio_config
+    )
+    
+    audio_filename = f"static/audio/{uuid4().hex}.mp3"
+    with open(audio_filename, "wb") as out:
+        out.write(response.audio_content)
+        print(f'Audio content written to file {audio_filename}')
+    return audio_filename
 
 # Ejecución del servidor Flask
 if __name__ == '__main__':
