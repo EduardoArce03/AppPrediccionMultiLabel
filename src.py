@@ -33,7 +33,6 @@ def get_db_connection():
     conn = psycopg2.connect(
         dbname='postgres', 
         user='postgres', 
-        password='edu123', 
         host='localhost', 
         port='5432'
     )
