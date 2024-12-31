@@ -1,8 +1,4 @@
-<p-toast 
-    position="top-center" 
-    key="confirm" 
-    (onClose)="onClose()" 
-    [baseZIndex]="5000">
+<p-toast position="top-center" key="confirm" (onClose)="onClose()" [baseZIndex]="5000">
     <ng-template let-message pTemplate="headless" let-closeFn="closeFn">
         <section class="flex p-3 gap-3 w-full bg-black-alpha-90 shadow-2" style="border-radius: 10px">
             <i class="pi pi-cloud-upload text-primary-500 text-2xl"></i>
@@ -14,25 +10,14 @@
                     {{ message.detail }}
                 </p>
                 <div class="flex flex-column gap-2">
-                    <p-progressBar 
-                        [value]="progress" 
-                        [showValue]="false" 
-                        [style]="{ height: '4px' }" />
+                    <p-progressBar [value]="progress" [showValue]="false" [style]="{ height: '4px' }" />
                     <label class="text-right text-xs text-white">
                         {{ progress }}% uploaded...
                     </label>
                 </div>
                 <div class="flex gap-3 mb-3">
-                    <p-button 
-                        label="Subir otro archivo?" 
-                        [text]="true" 
-                        styleClass="p-0" 
-                        (onClick)="onClose()" />
-                    <p-button 
-                        label="Cancelar" 
-                        [text]="true" 
-                        styleClass="text-white p-0" 
-                        (onClick)="onClose()" />
+                    <p-button label="Subir otro archivo?" [text]="true" styleClass="p-0" (onClick)="onClose()" />
+                    <p-button label="Cancelar" [text]="true" styleClass="text-white p-0" (onClick)="onClose()" />
                 </div>
             </div>
         </section>
@@ -48,16 +33,9 @@
                 <h2 class="p-mb-4">Cargar Imagen</h2>
 
                 <!-- Componente de carga de archivo -->
-                <p-fileUpload 
-                    name="file" 
-                    customUpload="true" 
-                    (uploadHandler)="onFileUpload($event)" 
-                    chooseLabel="Seleccionar Archivo" 
-                    uploadLabel="Subir" 
-                    cancelLabel="Cancelar" 
-                    [auto]="true" 
-                    [maxFileSize]="1000000" 
-                    accept="image/*" />
+                <p-fileUpload name="file" customUpload="true" (uploadHandler)="onFileUpload($event)"
+                    chooseLabel="Seleccionar Archivo" uploadLabel="Subir" cancelLabel="Cancelar" [auto]="true"
+                    [maxFileSize]="1000000" accept="image/*" />
             </p-accordionTab>
 
             <!-- Sección de predicciones -->
@@ -67,6 +45,8 @@
                     <h3 class="p-mb-3">Predicciones:</h3>
                     <ul class="p-pl-3">
                         <li *ngFor="let prediction of predictions" class="prediction-item">
+                            class="prediction-item"
+                            (click)="speakText(prediction)">
                             <i class="pi pi-check-circle p-mr-2"></i>{{ prediction }}
                         </li>
                     </ul>
