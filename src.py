@@ -53,13 +53,13 @@ def predict_image(model, image_path, threshold=0.5):
     return predicted_categories, img_array[0]
 
 # Ruta para guardar los resultados de predicción y la imagen
-def save_prediction_to_db(image_url, predictions, user_id, audio_url):
+def save_prediction_to_db(image_url, predictions, user_id):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             cursor.execute(
-                "INSERT INTO predictions(image_url, predictions, user_id, audio_url) VALUES (%s, %s, %s, %s)",
-                (image_url, ", ".join(predictions), user_id, audio_url)  # Guardar las predicciones como texto
+                "INSERT INTO predictions(image_url, predictions, user_id) VALUES (%s, %s, %s)",
+                (image_url, ", ".join(predictions), user_id)  # Guardar las predicciones como texto
             )
             conn.commit()
         conn.close()
@@ -120,18 +120,11 @@ def predict():
     try:
         predicted_categories, _ = predict_image(model, file_path, threshold=0.2)
         print(f"Predicciones realizadas: {predicted_categories}")
+
+        # Guardar la imagen y las predicciones en la base de datos
+        save_prediction_to_db(image_url, predicted_categories, user_id)
         
-        # Generar el audio con las predicciones
-        audio_filename = generate_audio(predicted_categories)
-        
-        audio_url = f"http://localhost:5000/{audio_filename}"
-                # Guardar la imagen y las predicciones en la base de datos
-        save_prediction_to_db(image_url, predicted_categories, user_id, audio_url)
-        
-        return jsonify({
-            'predictions': predicted_categories,
-            'audio_url': audio_url
-            })
+        return jsonify({'predictions': predicted_categories})
         
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -255,38 +248,6 @@ def login():
 def serve_uploaded_file(filename):
     return send_from_directory('static/uploads', filename)
 
-#API SPEECH TO TEXT
-
-from google.cloud import texttospeech
-import os
-
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'project_clv.json'
-client = texttospeech.TextToSpeechClient()
-
-def generate_audio(predictions):
-    predicted_objects = ', '.join(predictions)
-    text = f"Los objetos detectados en la imagen son: {predicted_objects}"
-    
-    synthesis_input = texttospeech.SynthesisInput(text=text)
-    
-    voice = texttospeech.VoiceSelectionParams(
-        language_code="es-ES",
-        name="es-ES-Standard-A",
-    )
-    
-    audio_config = texttospeech.AudioConfig(
-        audio_encoding=texttospeech.AudioEncoding.MP3
-    )
-    
-    response = client.synthesize_speech(
-        input=synthesis_input, voice=voice, audio_config=audio_config
-    )
-    
-    audio_filename = f"static/audio/{uuid4().hex}.mp3"
-    with open(audio_filename, "wb") as out:
-        out.write(response.audio_content)
-        print(f'Audio content written to file {audio_filename}')
-    return audio_filename
 
 # Ejecución del servidor Flask
 if __name__ == '__main__':

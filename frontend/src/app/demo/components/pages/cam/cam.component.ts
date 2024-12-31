@@ -14,7 +14,6 @@ export class CamComponent {
 
   capturedImage: string | null = null;
   predictions: string[] = [];
-  audio_Url: string = '';
   visible: boolean = false;
   progress: number = 0;
   interval = null;
@@ -69,9 +68,7 @@ export class CamComponent {
     if (this.capturedImage) {
       this.predictionService.predictImage(this.capturedImage).subscribe(
         (response) => {
-          this.predictions = response.predictions;
-          this.audio_Url = response.audio_url
-          console.log("lol", this.audio_Url)  // Las predicciones vienen del backend
+          this.predictions = response.predictions;  // Las predicciones vienen del backend
           console.log('Predicciones:', this.predictions);
           this.showSuccess();
           this.showInfo();
@@ -101,13 +98,6 @@ export class CamComponent {
     this.visible = false;
     this.message.clear('confirm');
   }
-
-  playAudio(audioUrl : string): void {
-    const audio = new Audio(audioUrl);
-    audio.play();
-    console.log( "xd" , audioUrl);
-  }
-
 
   showConfirm() {
     if (!this.visible) {
