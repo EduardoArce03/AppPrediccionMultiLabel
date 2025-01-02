@@ -10,6 +10,7 @@ import { MessageService } from 'primeng/api';
 export class FileComponent {
   predictions: string[] = [];
   visible: boolean = false;
+  audio_Url: string = '';
   progress: number = 0;
   interval = null;
 
@@ -29,6 +30,8 @@ export class FileComponent {
       this.predictionService.predictImage(fileData).subscribe(
         (response) => {
           this.predictions = response.predictions;  // Las predicciones vienen del backend
+          this.audio_Url = response.audio_url
+          console.log("lol", this.audio_Url)  // Las predicciones vienen del backend
           console.log('Predicciones:', this.predictions);
           this.showSuccess();
           this.showInfo();
@@ -90,11 +93,10 @@ export class FileComponent {
     this.message.clear('confirm');
   }
 
-  speakText(text: string) {
-    const synth = window.speechSynthesis;
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'es-ES';
-    synth.speak(utterance);
+  playAudio(audioUrl : string): void {
+    const audio = new Audio(audioUrl);
+    audio.play();
+    console.log( "xd" , audioUrl);
   }
   
 }

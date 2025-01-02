@@ -9,10 +9,15 @@
 INGRESAR LA TABLA DE PREDICCIONES:
 
 CREATE TABLE predictions (
-    id SERIAL PRIMARY KEY,
-    image_url TEXT NOT NULL,
-    predictions TEXT NOT NULL,
-    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id SERIAL PRIMARY KEY,              -- Identificador único
+    image_url TEXT NOT NULL,            -- URL de la imagen
+    predictions TEXT NOT NULL,          -- Predicciones en texto
+    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de predicción
+    user_id INT NOT NULL,               -- Identificador del usuario asociado
+	audio_url TEXT NOT NULL,            -- URL de la imagen
+    CONSTRAINT fk_user_id
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE               -- Borra las predicciones si el usuario es eliminado
 );
 
 

@@ -16,12 +16,12 @@ app = Flask(__name__)
 CORS(app)
 
 # Ruta al modelo entrenado
-MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
+MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
-ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -33,7 +33,7 @@ def get_db_connection():
     conn = psycopg2.connect(
         dbname='postgres', 
         user='postgres', 
-        password='edu123', 
+        password='admin', 
         host='localhost', 
         port='5432'
     )
@@ -136,51 +136,27 @@ def predict():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-@app.route('/recent-predictions/user', methods=['GET'])
-def get_recent_predictions_user():
-    try:
-        conn = get_db_connection()
-        with conn.cursor() as cursor:
-            cursor.execute("""
-                SELECT p.image_url, p.predictions, p.timestamp, u.name AS user_name
-                FROM predictions p
-                JOIN users u ON p.user_id = u.id
-                ORDER BY p.timestamp DESC
-                LIMIT 5
-            """)
-            rows = cursor.fetchall()
-
-        conn.close()
-
-        predictions_data = [
-            {
-                'image_url': row[0],
-                'predictions': row[1],
-                'timestamp': row[2],
-                'user_name': row[3]
-            } for row in rows
-        ]
-
-        return jsonify({'predictions': predictions_data})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-
 @app.route('/recent-predictions', methods=['GET'])
 def get_recent_predictions():
+    user_id = request.args.get('user_id')  # Obtener user_id desde los parámetros GET
+
+    if not user_id:
+        return jsonify({'error': 'user_id es requerido'}), 400
+
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # Seleccionar las predicciones recientes de todos los usuarios !!
+            # Seleccionar las predicciones recientes del usuario autenticado
             cursor.execute("""
-                SELECT p.image_url, p.predictions, p.timestamp, u.name AS user_name
+                SELECT p.image_url, p.predictions, p.timestamp, p.user_id, u.name AS nombre
                 FROM predictions p
-                JOIN users u ON p.user_id = u.id
+                JOIN users u 
+                ON p.user_id = u.id
+                WHERE p.user_id = %s
                 ORDER BY p.timestamp DESC
-                LIMIT 10
-            """)
+                LIMIT 10;
+            """, (user_id))
             rows = cursor.fetchall()
-
         conn.close()
 
         predictions_data = [
@@ -188,15 +164,14 @@ def get_recent_predictions():
                 'image_url': row[0],
                 'predictions': row[1],
                 'timestamp': row[2],
-                'user_name': row[3]
+                'nombre': row[4]
             } for row in rows
         ]
 
         return jsonify({'predictions': predictions_data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-
-
+    
 # LOGICA DE AUTENTICACION (REGISTRO Y LOGEO)
 
 @app.route('/register', methods=['POST'])
@@ -260,6 +235,13 @@ from google.cloud import texttospeech
 import os
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'project_clv.json'
 client = texttospeech.TextToSpeechClient()
+import os
+from uuid import uuid4
+from google.cloud import texttospeech
+
+os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'project_clv.json'
+client = texttospeech.TextToSpeechClient()
+
 def generate_audio(predictions):
     predicted_objects = ', '.join(predictions)
     text = f"Los objetos detectados en la imagen son: {predicted_objects}"
@@ -279,7 +261,11 @@ def generate_audio(predictions):
         input=synthesis_input, voice=voice, audio_config=audio_config
     )
     
-    audio_filename = f"static/audio/{uuid4().hex}.mp3"
+    # Crear el directorio 'static/audio' si no existe
+    audio_folder = 'static/audio'
+    os.makedirs(audio_folder, exist_ok=True)
+
+    audio_filename = os.path.join(audio_folder, f"{uuid4().hex}.mp3")
     with open(audio_filename, "wb") as out:
         out.write(response.audio_content)
         print(f'Audio content written to file {audio_filename}')

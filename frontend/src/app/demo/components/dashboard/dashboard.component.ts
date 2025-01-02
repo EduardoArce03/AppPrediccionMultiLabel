@@ -12,17 +12,12 @@ import { PredictionService } from '../../service/prediction.service';
 export class DashboardComponent implements OnInit, OnDestroy {
 
     items!: MenuItem[];
-
     recentPredictions: any[] = [];
-
     products!: Product[];
-
     chartData: any;
-
+    userId: any;
     chartOptions: any;
-
     subscription!: Subscription;
-
     selectedProduct: any;
     displayModal: boolean = false;
 
@@ -43,9 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
             { label: 'Remove', icon: 'pi pi-fw pi-minus' }
         ];
-
         console.log('Usuario', localStorage.getItem('user'));
-
     }
 
     initChart() {
@@ -114,17 +107,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     loadRecentPredictions() {
-        this.predictionService.getRecentPredictions().subscribe(
-            (data) => {
-                this.recentPredictions = data.predictions;
-            },
-            (error) => {
-                console.error('Error fetching recent predictions:', error);
-            }
-        );
+        this.userId = localStorage.getItem('user');
+        if (this.userId) {
+            const parsedUser = JSON.parse(this.userId); // Convertir de JSON a objeto
+            const userId = parsedUser.id; // Extraer el campo `id`
+            this.predictionService.getRecentPredictions(userId).subscribe(
+                (data) => {
+                    this.recentPredictions = data.predictions;
+                },
+                (error) => {
+                    console.error('Error fetching recent predictions:', error);
+                }
+            );
+        }
+
     }
-
-
 
     viewPrediction(product: any): void {
         this.selectedProduct = product;

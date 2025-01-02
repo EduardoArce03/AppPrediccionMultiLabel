@@ -10,7 +10,7 @@ export class PredictionService {
   constructor(private http: HttpClient) {}
 
   // Función para obtener las predicciones recientes
-  getRecentPredictions(): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}/recent-predictions`);
+  getRecentPredictions(userId: String): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/recent-predictions?user_id=${userId}`);
   }
 }
