@@ -55,13 +55,21 @@ export class VoiceService {
     }
 
     private handleCommand(command: string): void {
-        if (command.includes('predicciones con cámara')) {
+        if (command.includes('tomar foto')) {
+            this.ngZone.run(() => this.router.navigate(['/pages/cam'], { queryParams: { capture: true } }));
+        } else if (command.includes('predecir')) {
+            this.ngZone.run(() => this.router.navigate(['/pages/cam'], { queryParams: { predict: true } }));
+        } else if (command.includes('tomar foto y predecir')) {
+            this.ngZone.run(() => this.router.navigate(['/pages/cam'], { queryParams: { capture: true, predict: true } }));
+        }else if (command.includes('predicciones con cámara') || command.includes('predicción con cámara')
+            || command.includes('cámara') || command.includes('cámaras')) {
             this.ngZone.run(() => this.router.navigate(['/pages/cam'])); // Redirige usando NgZone
         } else if (command.includes('historial de predicciones')) {
             this.ngZone.run(() => this.router.navigate(['/historial'])); // Redirige usando NgZone
-        } else if (command.includes('inicio')) {
-            this.ngZone.run(() => this.router.navigate(['/home'])); // Redirige usando NgZone
-        } else if (command.includes('predicciones con archivo')) {
+        } else if (command.includes('inicio') || command.includes('principal')) {
+            this.ngZone.run(() => this.router.navigate(['/'])); // Redirige usando NgZone
+        } else if (command.includes('predicciones con archivo') || command.includes('predicción con archivo')
+                || command.includes('archivo') || command.includes('archivos')) {
             this.ngZone.run(() => this.router.navigate(['/pages/file'])); // Redirige usando NgZone
         } else {
             console.warn('Comando no reconocido.');

@@ -1,6 +1,7 @@
 import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { PredictService } from 'src/app/demo/service/predict.service';
 import { MessageService } from 'primeng/api';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-cam',
@@ -15,13 +16,17 @@ export class CamComponent {
   capturedImage: string | null = null;
   predictions: string[] = [];
   audio_Url: string = '';
+  capturedPhoto: boolean = false;
+  predict: boolean = false;
   visible: boolean = false;
   progress: number = 0;
   interval = null;
   sizes!: any[];
   selectedSize: any = '';
 
-  constructor(private predictionService: PredictService, private message: MessageService, private cdr: ChangeDetectorRef) { }
+  constructor(private predictionService: PredictService, private message: MessageService, private cdr: ChangeDetectorRef,
+              private route: ActivatedRoute
+  ) { }
 
   ngAfterViewInit(): void {
     // Acceder a la cámara
@@ -38,7 +43,16 @@ export class CamComponent {
       { name: 'Large', class: 'p-datatable-lg' },
     ];
     this.selectedSize = this.sizes[2];
-
+    this.route.queryParams.subscribe(params => {
+      if (params['capture']) {
+        this.capturedPhoto = true;
+        this.capturePhoto();
+      } 
+      if (params['predict']){
+        this.predict = true;
+        this.predictImage();
+      }
+    });
   }
 
   onSizeChange() {
@@ -63,7 +77,6 @@ export class CamComponent {
       this.capturedImage = canvas.toDataURL('image/png'); // Convertir a base64
     }
   }
-
 
   predictImage(): void {
     if (this.capturedImage) {
