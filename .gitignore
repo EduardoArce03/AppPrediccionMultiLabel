@@ -331,3 +331,4 @@ tf_directml_env/Scripts/python.exe
 tf_directml_env/Scripts/pythonw.exe
 tf_directml_env/Scripts/activate
 /tf_directml_env/Scripts
+project_clv.json
