@@ -20,6 +20,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     subscription!: Subscription;
     selectedProduct: any;
     displayModal: boolean = false;
+    insufficientData: boolean = false;
 
     constructor(private productService: ProductService, public layoutService: LayoutService, private predictionService: PredictionService) {
         this.subscription = this.layoutService.configUpdate$
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.initChart();
         this.loadRecentPredictions();
         this.productService.getProductsSmall().then(data => this.products = data);
+        this.loadCategoryData();
 
         this.items = [
             { label: 'Add New', icon: 'pi pi-fw pi-plus' },
@@ -100,6 +102,59 @@ export class DashboardComponent implements OnInit, OnDestroy {
         };
     }
 
+    loadCategoryData() {
+        const userId = localStorage.getItem('user_id') || '2'; // Replace with dynamic user ID
+
+        this.predictionService.getRecentPredictions(userId).subscribe(
+            (data) => {
+                const predictions = data.predictions;
+
+                if (predictions.length === 0) {
+                    this.insufficientData = true;
+                    return;
+                }
+
+                const categoryCounts: { [key: string]: number } = {};
+                let total = 0;
+
+                predictions.forEach(prediction => {
+                    prediction.predictions.split(', ').forEach(category => {
+                        categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+                        total++;
+                    });
+                });
+
+                const labels = Object.keys(categoryCounts);
+                const values = Object.values(categoryCounts).map(count => (count / total) * 100);
+
+                this.chartData = {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40']
+                    }]
+                };
+
+                this.chartOptions = {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                };
+                console.log('Predictions:', predictions);
+                console.log('Chart Labels:', labels);
+                console.log('Chart Values:', values);
+            },
+            (error) => {
+                console.error('Error fetching predictions:', error);
+                this.insufficientData = true;
+            }
+        );
+
+    }
+
     ngOnDestroy() {
         if (this.subscription) {
             this.subscription.unsubscribe();
@@ -126,13 +181,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.selectedProduct = product;
         this.displayModal = true;
     }
-
-    topCategories = [
-        { name: 'Perros', percentage: 45 },
-        { name: 'Gatos', percentage: 30 },
-        { name: 'Autos', percentage: 15 },
-        { name: 'Pájaros', percentage: 10 }
-    ];
-    
-
 }
