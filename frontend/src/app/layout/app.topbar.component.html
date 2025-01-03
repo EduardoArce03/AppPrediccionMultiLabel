@@ -1,27 +1,78 @@
 <style>
+    .voice-toggle {
+        display: flex;
+        justify-content: center;
+        margin-top: 7px;
+    }
+
     .voice-toggle button {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 20px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background-color 0.3s, color 0.3s;
-}
+        position: relative;
+        width: 60px;
+        height: 30px;
+        background-color: #ccc;
+        border: none;
+        border-radius: 15px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+    }
 
-.voice-toggle button.active {
-  background-color: #4caf50;
-  color: white;
-}
+    .voice-toggle button.active {
+        background-color: #4caf50;
+        box-shadow: 0 4px 10px rgba(72, 239, 128, 0.5);
+    }
 
-.voice-toggle button {
-  background-color: #f44336;
-  color: white;
-}
+    .voice-toggle button::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 5px;
+        width: 20px;
+        height: 20px;
+        background-color: white;
+        border-radius: 50%;
+        transform: translateY(-50%);
+        transition: transform 0.3s ease-in-out;
+    }
 
+    .voice-toggle button.active::before {
+        transform: translate(25px, -50%);
+    }
+
+    .voice-toggle button span {
+        position: absolute;
+        top: 50%;
+        font-size: 12px;
+        font-weight: bold;
+        color: transparent;
+        transform: translateY(-50%);
+        pointer-events: none;
+    }
+
+    .voice-toggle button span.off {
+        left: 10px;
+        opacity: 1;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .voice-toggle button span.on {
+        right: 10px;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+    }
+
+    .voice-toggle button.active span.off {
+        opacity: 0;
+    }
+
+    .voice-toggle button.active span.on {
+        opacity: 1;
+    }
 </style>
 <div class="layout-topbar">
     <a class="layout-topbar-logo" routerLink="">
-        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg" alt="logo">
+        <img src="assets/layout/images/{{layoutService.config().colorScheme === 'light' ? 'logo-dark' : 'logo-white'}}.svg"
+            alt="logo">
         <span>App IA</span>
     </a>
 
@@ -29,11 +80,13 @@
         <i class="pi pi-bars"></i>
     </button>
 
-    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button"
+        (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
     </button>
 
-    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+    <div #topbarmenu class="layout-topbar-menu"
+        [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <button class="p-link layout-topbar-button" (onClick)="op.toggle($event)">
             <i class="pi pi-calendar"></i>
             <span>Calendar</span>
@@ -50,7 +103,8 @@
                         <span class="font-bold text-lg">Hola, {{ user?.name }}</span>
                         <p class="text-sm text-600">¡Bienvenido de nuevo!</p>
                     </div>
-                    <button pButton type="button" label="Cerrar Sesión" class="p-button-danger w-full" (click)="logout()"></button>
+                    <button pButton type="button" label="Cerrar Sesión" class="p-button-danger w-full"
+                        (click)="logout()"></button>
                 </ng-container>
                 <ng-template #notLoggedIn>
                     <!-- Opciones para usuarios no logueados -->
@@ -58,19 +112,22 @@
                         <span class="font-bold text-lg">Bienvenido</span>
                         <p class="text-sm text-600">Por favor, inicia sesión o regístrate</p>
                     </div>
-                    <button pButton type="button" label="Iniciar Sesión" class="p-button-primary w-full mb-2" (click)="login()"></button>
-                    <button pButton type="button" label="Registrarse" class="p-button-outlined w-full" (click)="register()"></button>
+                    <button pButton type="button" label="Iniciar Sesión" class="p-button-primary w-full mb-2"
+                        (click)="login()"></button>
+                    <button pButton type="button" label="Registrarse" class="p-button-outlined w-full"
+                        (click)="register()"></button>
                 </ng-template>
             </div>
-        </p-overlayPanel>        
+        </p-overlayPanel>
         <button class="p-link layout-topbar-button" [routerLink]="'/documentation'">
             <i class="pi pi-cog"></i>
             <span>Settings</span>
         </button>
         <div class="voice-toggle">
             <button (click)="toggleVoice()" [class.active]="isListening">
-              {{ isListening ? 'Desactivar Voz' : 'Activar Voz' }}
+                <span class="off">Off</span>
+                <span class="on">On</span>
             </button>
-          </div>
+        </div>
     </div>
 </div>
