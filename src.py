@@ -12,17 +12,11 @@ from uuid import uuid4
 # Configuración del servidor Flask
 app = Flask(__name__)
 
-<<<<<<< Updated upstream
 MEGABYTE = (2 ** 10) ** 2
 app.config['MAX_CONTENT_LENGTH'] = None
 # Max number of fields in a multi part form (I don't send more than one file)
 # app.config['MAX_FORM_PARTS'] = ...
 app.config['MAX_FORM_MEMORY_SIZE'] = 50 * MEGABYTE
-=======
-# Set maximum upload size to 10 MB
-app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100 MB
-
->>>>>>> Stashed changes
 # Habilitar CORS
 CORS(app)
 
