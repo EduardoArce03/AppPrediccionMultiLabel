@@ -15,25 +15,32 @@ app = Flask(__name__)
 # Habilitar CORS
 CORS(app)
 
-# Ruta al modelo entrenado
-MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
+#PAVLO
+#MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
+MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
-ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
+#ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
 # Mapeo de ID de categoría a índicee
 category_id_to_index = {cat['id']: idx for idx, cat in enumerate(categories)}
 
+#PASS PAVLO
+#password = "admin"
+#PASS EDU
+password = "edu123"
+
 # Función para conectarse a la base de datos
 def get_db_connection():
     conn = psycopg2.connect(
         dbname='postgres', 
         user='postgres', 
-        password='admin', 
+        password=password, 
         host='localhost', 
         port='5432'
     )

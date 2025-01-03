@@ -19,6 +19,7 @@ export class CamComponent {
   capturedPhoto: boolean = false;
   predict: boolean = false;
   visible: boolean = false;
+  playAud : boolean = false;
   progress: number = 0;
   interval = null;
   sizes!: any[];
@@ -51,7 +52,11 @@ export class CamComponent {
       if (params['predict']){
         this.predict = true;
         this.predictImage();
+        setTimeout(() => {
+          this.playAudio(this.audio_Url);
+        },2000);
       }
+      
     });
   }
 
@@ -83,7 +88,7 @@ export class CamComponent {
       this.predictionService.predictImage(this.capturedImage).subscribe(
         (response) => {
           this.predictions = response.predictions;
-          this.audio_Url = response.audio_url
+          this.audio_Url = response.audio_url;
           console.log("lol", this.audio_Url)  // Las predicciones vienen del backend
           console.log('Predicciones:', this.predictions);
           this.showSuccess();
