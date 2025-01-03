@@ -127,4 +127,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.displayModal = true;
     }
 
+    topCategories = [
+        { name: 'Perros', percentage: 45 },
+        { name: 'Gatos', percentage: 30 },
+        { name: 'Autos', percentage: 15 },
+        { name: 'Pájaros', percentage: 10 }
+    ];
+    
+
 }
