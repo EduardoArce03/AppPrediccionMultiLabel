@@ -8,51 +8,51 @@ import { NgZone } from "@angular/core";
 
 export class VoiceService {
     transcript = '';
+    isListening = false;
     recognition: any;
     constructor(private router: Router, private ngZone: NgZone) {}
 
     startListening(): void {
         const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
         if (!SpeechRecognition) {
-            console.warn('Tu navegador no soporta comandos de voz.');
-            return;
+          console.warn('Tu navegador no soporta comandos de voz.');
+          return;
         }
-
+    
         this.recognition = new SpeechRecognition();
-        this.recognition.lang = 'es-ES'; // Idioma español
+        this.recognition.lang = 'es-ES';
         this.recognition.interimResults = false;
         this.recognition.maxAlternatives = 1;
-        this.recognition.continuous = true; // Escucha continua
-
-        // Manejar resultados de voz
+        this.recognition.continuous = true;
+    
         this.recognition.onresult = (event: any) => {
-            const speechResult = event.results[event.results.length - 1][0].transcript.toLowerCase();
-            console.log('Texto reconocido:', speechResult);
-            this.transcript = speechResult;
-            this.handleCommand(speechResult);
+          const speechResult = event.results[event.results.length - 1][0].transcript.toLowerCase();
+          console.log('Texto reconocido:', speechResult);
+          this.handleCommand(speechResult);
         };
-
-        // Manejar errores y reiniciar escucha
+    
         this.recognition.onerror = (event: any) => {
-            console.error('Error en el reconocimiento de voz:', event.error);
-            this.startListening(); // Reiniciar
+          console.error('Error en el reconocimiento de voz:', event.error);
         };
-
+    
         this.recognition.onend = () => {
-            console.log('Reconocimiento finalizado. Reiniciando...');
-            this.startListening(); // Reiniciar
+          console.log('Reconocimiento finalizado.');
+          this.isListening = false; // Asegurarte de actualizar el estado
         };
-
+    
         this.recognition.start();
+        this.isListening = true;
         console.log('Reconocimiento de voz activado.');
-    }
-
-    stopListening(): void {
+      }
+    
+      stopListening(): void {
         if (this.recognition) {
-            this.recognition.stop();
-            console.log('Reconocimiento de voz desactivado.');
+          this.recognition.onend = null; // Prevenir reinicio
+          this.recognition.stop();
+          this.isListening = false;
+          console.log('Reconocimiento de voz desactivado.');
         }
-    }
+      }
 
     private handleCommand(command: string): void {
         if (command.includes('tomar foto')) {

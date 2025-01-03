@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { LayoutService } from "./service/app.layout.service";
 import { AuthService } from '../demo/service/auth.service';
 import { Router } from '@angular/router';
+import { VoiceService } from '../demo/service/voice.service';
 
 @Component({
     selector: 'app-topbar',
@@ -14,6 +15,8 @@ export class AppTopBarComponent implements OnInit {
 
     user: any = null;
 
+    isListening = false;
+
     items!: MenuItem[];
 
     @ViewChild('menubutton') menuButton!: ElementRef;
@@ -22,9 +25,11 @@ export class AppTopBarComponent implements OnInit {
 
     @ViewChild('topbarmenu') menu!: ElementRef;
 
-    constructor(public layoutService: LayoutService, private authService : AuthService, private router : Router) { }
+    constructor(public layoutService: LayoutService, private authService : AuthService, private router : Router,
+       private voiceService: VoiceService) { }
 
     ngOnInit() {
+      this.isListening = this.voiceService.isListening;
         this.authService.isAuthenticated$.subscribe((status) => {
             this.isAuthenticated = status;
             this.user = this.authService.getUser();
@@ -45,5 +50,13 @@ export class AppTopBarComponent implements OnInit {
       logout() {
         this.authService.logout();
         this.router.navigate(['/']);
+      }
+      toggleVoice(): void {
+        if (this.voiceService.isListening) {
+          this.voiceService.stopListening();
+        } else {
+          this.voiceService.startListening();
+        }
+        this.isListening = this.voiceService.isListening;
       }
 }
