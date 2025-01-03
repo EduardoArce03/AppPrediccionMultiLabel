@@ -38,7 +38,9 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Configuracion',
                 items: [
-                    { label: 'Configuracion', icon: 'pi pi-fw pi-cog', routerLink: ['/uikit/charts'] }
+                    { label: 'Configuracion', icon: 'pi pi-fw pi-cog', command: () => {
+                        window.open('/assets/configuration/cuaderno.html', '_blank');
+                    } }
                 ]
             },
             {
