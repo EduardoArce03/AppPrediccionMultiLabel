@@ -26,12 +26,13 @@ export class AppMenuComponent implements OnInit {
                     
                     { label: 'Prediccion con camara', icon: 'pi pi-fw pi-exclamation-circle', routerLink: ['/pages/cam'] },
                     { label: 'Prediccion con archivo', icon: 'pi pi-fw pi-file', routerLink: ['/pages/file']}
+                    
                 ]
             },
             {
                 label: 'Historico de predicciones',
                 items: [
-                    { label: 'Historico de predicciones', icon: 'pi pi-fw pi-calendar', routerLink: ['/uikit/charts'] }
+                    { label: 'Historico de predicciones', icon: 'pi pi-fw pi-calendar', routerLink: ['/pages/historial'] }
                 ]
             },
             {
