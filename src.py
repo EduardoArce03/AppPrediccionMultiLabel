@@ -16,14 +16,14 @@ app = Flask(__name__)
 CORS(app)
 
 #PAVLO
-#MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
-MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
+MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
+#MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
-#ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
-ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
+#ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -31,9 +31,9 @@ categories = coco.loadCats(coco.getCatIds())
 category_id_to_index = {cat['id']: idx for idx, cat in enumerate(categories)}
 
 #PASS PAVLO
-#password = "admin"
+password = "admin"
 #PASS EDU
-password = "edu123"
+#password = "edu123"
 
 # Función para conectarse a la base de datos
 def get_db_connection():
@@ -162,6 +162,41 @@ def get_recent_predictions():
                 WHERE p.user_id = %s
                 ORDER BY p.timestamp DESC
                 LIMIT 10;
+            """, (user_id))
+            rows = cursor.fetchall()
+        conn.close()
+
+        predictions_data = [
+            {
+                'image_url': row[0],
+                'predictions': row[1],
+                'timestamp': row[2],
+                'nombre': row[4]
+            } for row in rows
+        ]
+
+        return jsonify({'predictions': predictions_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    
+@app.route('/all-predictions', methods=['GET'])
+def get_predictions():
+    user_id = request.args.get('user_id')  # Obtener user_id desde los parámetros GET
+
+    if not user_id:
+        return jsonify({'error': 'user_id es requerido'}), 400
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # Seleccionar las predicciones recientes del usuario autenticado
+            cursor.execute("""
+                SELECT p.image_url, p.predictions, p.timestamp, p.user_id, u.name AS nombre
+                FROM predictions p
+                JOIN users u 
+                ON p.user_id = u.id
+                WHERE p.user_id = %s
+                ORDER BY p.timestamp DESC;
             """, (user_id))
             rows = cursor.fetchall()
         conn.close()

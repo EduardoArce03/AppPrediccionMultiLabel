@@ -1,1 +1,39 @@
-<p>historial works!</p>
+<div class="card">
+    <h5>Historial de Predicciones</h5>
+    <!-- src/app/dashboard/dashboard.component.html -->
+    <p-table [value]="recentPredictions" [paginator]="true" [rows]="9" responsiveLayout="scroll">
+        <ng-template pTemplate="header">
+            <tr>
+                <th>Usuario</th>
+                <th>Imagen</th>
+                <th pSortableColumn="timestamp">Fecha <p-sortIcon field="timestamp"></p-sortIcon></th>
+                <th>Prediccion</th>
+                <th>Generar Reporte</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-prediction>
+            <tr>
+                <td>{{prediction.nombre}}</td>
+                <td style="width: 15%; min-width: 5rem;">
+                    <img [src]="prediction.image_url" class="shadow-4" alt="Predicción" width="50">
+                </td>
+                <td>{{prediction.timestamp}}</td>
+                <td>{{prediction.predictions}}</td>
+                <td>
+                    <button pButton pRipple type="button" icon="pi pi-file-pdf"
+                        class="p-button p-component p-button-text p-button-icon-only"
+                        (click)="generateReport(prediction)">
+                    </button>
+                </td>
+            </tr>
+            <p-dialog [(visible)]="displayModal" [header]="'Generar Reporte'" [modal]="true" [closable]="true"
+                [responsive]="true">
+                <ng-template pTemplate="content">
+                    <p><strong>Fecha:</strong> {{prediction.timestamp}}</p>
+                    <p><strong>Peso Imagen:</strong> {{prediction.timestamp}}</p>
+                </ng-template>
+            </p-dialog>
+        </ng-template>
+    </p-table>
+
+</div>

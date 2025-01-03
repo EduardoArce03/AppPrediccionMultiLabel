@@ -45,3 +45,7 @@ CREATE TABLE users (
 **ADICIONALES**
 
 - ENTRAR A BD EN LINUX CON USUARIO POSTGRES: psql -U postgres -d mi_base -h localhost -p 5432
+
+9. instalar
+npm install jspdf
+npm install jspdf-autotable

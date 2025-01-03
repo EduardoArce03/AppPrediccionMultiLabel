@@ -7,6 +7,7 @@ import { VoiceService } from '../../service/voice.service';
         { path: 'cam', loadChildren: () => import('./cam/cam.module').then(m => m.CamModule) },
         { path: 'file', loadChildren: () => import('./file/file.module').then(m => m.FileModule) },
         { path: 'historial', loadChildren: () => import ('./historial/historial.module').then(m => m.HistorialModule) },
+        { path: 'contacto', loadChildren: () => import ('./contacto/contacto.module').then(m => m.ContactoModule) },
         { path: 'voice', component: VoiceService },
         { path: '**', redirectTo: '/notfound' }
     ])],

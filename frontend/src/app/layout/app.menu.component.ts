@@ -56,7 +56,7 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Contacto',
                 items: [
-                    { label: 'Contacto', icon: 'pi pi-fw pi-envelope', routerLink: ['/uikit/charts'] }
+                    { label: 'Contacto', icon: 'pi pi-fw pi-envelope', routerLink: ['/pages/contacto'] }
                 ]
             },
             {

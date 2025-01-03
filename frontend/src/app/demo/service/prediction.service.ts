@@ -13,4 +13,8 @@ export class PredictionService {
   getRecentPredictions(userId: String): Observable<any> {
     return this.http.get<any>(`${environment.apiUrl}/recent-predictions?user_id=${userId}`);
   }
+
+  getPredictions(userId: String): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}/all-predictions?user_id=${userId}`);
+  }
 }

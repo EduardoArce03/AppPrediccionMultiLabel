@@ -120,7 +120,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 }
             );
         }
-
     }
 
     viewPrediction(product: any): void {
