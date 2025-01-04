@@ -40,8 +40,8 @@ category_id_to_index = {cat['id']: idx for idx, cat in enumerate(categories)}
 #PASS PAVLO
 #password = "admin"
 #PASS EDU
-#password = "edu123"
-password = "postgres"
+password = "edu123"
+#password = "postgres"
 
 # Función para conectarse a la base de datos
 def get_db_connection():

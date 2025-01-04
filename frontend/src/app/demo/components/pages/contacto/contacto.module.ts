@@ -19,6 +19,9 @@ import { DialogModule } from 'primeng/dialog';
 import { AccordionModule } from 'primeng/accordion';
 import { MessageService } from 'primeng/api';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { StepsModule } from 'primeng/steps';
+import { CardModule } from 'primeng/card';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -38,7 +41,9 @@ import { SelectButtonModule } from 'primeng/selectbutton';
         InputNumberModule,
         DialogModule,
         AccordionModule,
-        SelectButtonModule
+        SelectButtonModule,
+        StepsModule,
+        CardModule
         
     ],
     declarations: [ContactoComponent],
