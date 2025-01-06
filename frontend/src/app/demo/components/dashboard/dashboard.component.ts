@@ -22,6 +22,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     selectedProduct: any;
     displayModal: boolean = false;
     insufficientData: boolean = false;
+    selectedPrediction: any = null; // Almacena la predicción seleccionada
 
     constructor(private productService: ProductService, public layoutService: LayoutService, private predictionService: PredictionService) {
         this.subscription = this.layoutService.configUpdate$
@@ -194,4 +195,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
             }
         );
     }
+
+    showDetails(prediction: any): void {
+        this.selectedPrediction = prediction; // Asigna la predicción seleccionada
+        this.displayModal = true; // Abre el diálogo
+      }
 }

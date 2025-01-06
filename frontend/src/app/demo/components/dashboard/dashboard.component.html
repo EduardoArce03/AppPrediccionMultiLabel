@@ -89,15 +89,6 @@
                                 class="p-button p-component p-button-text p-button-icon-only"></button>
                         </td>
                     </tr>
-                    <p-dialog [(visible)]="displayModal" [header]="'Detalles de la Predicción'" [modal]="true"
-                        [closable]="true" [responsive]="true">
-                        <ng-template pTemplate="content">
-                            <p><strong>Fecha:</strong> {{prediction.timestamp}}</p>
-                            <p><strong>Peso Imagen:</strong> {{prediction.timestamp}}</p>
-                            <img [src]="'assets/demo/images/product/' + selectedProduct?.image" alt="Imagen"
-                                width="100">
-                        </ng-template>
-                    </p-dialog>
                 </ng-template>
             </p-table>
         </div>
@@ -121,7 +112,7 @@
         </div>
 
         <div class="card">
-            <h5>Predicciones recientes</h5>
+            <h5>Todas las predicciones</h5>
             <!-- src/app/dashboard/dashboard.component.html -->
             <p-table [value]="allPredictions" [paginator]="true" [rows]="5" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
@@ -142,21 +133,29 @@
                         <td>{{prediction.timestamp}}</td>
                         <td>{{prediction.predictions}}</td>
                         <td>
-                            <button pButton pRipple type="button" icon="pi pi-search"
-                                class="p-button p-component p-button-text p-button-icon-only"></button>
+                            <button 
+                                pButton 
+                                pRipple 
+                                type="button" 
+                                icon="pi pi-search"
+                                class="p-button p-component p-button-text p-button-icon-only"
+                                (click)="showDetails(prediction)">
+                            </button>
                         </td>
                     </tr>
-                    <p-dialog [(visible)]="displayModal" [header]="'Detalles de la Predicción'" [modal]="true"
-                        [closable]="true" [responsive]="true">
-                        <ng-template pTemplate="content">
-                            <p><strong>Fecha:</strong> {{prediction.timestamp}}</p>
-                            <p><strong>Peso Imagen:</strong> {{prediction.timestamp}}</p>
-                            <img [src]="'assets/demo/images/product/' + selectedProduct?.image" alt="Imagen"
-                                width="100">
-                        </ng-template>
-                    </p-dialog>
                 </ng-template>
             </p-table>
         </div>
     </div>
+
+    <p-dialog [(visible)]="displayModal" [header]="'Detalles de la Predicción'" [modal]="true" [closable]="true" [responsive]="true">
+        <ng-template pTemplate="content">
+            <div *ngIf="selectedPrediction">
+                <p><strong>Usuario:</strong> {{ selectedPrediction.nombre }}</p>
+                <p><strong>Fecha:</strong> {{ selectedPrediction.timestamp }}</p>
+                <p><strong>Predicción:</strong> {{ selectedPrediction.predictions }}</p>
+                <img [src]="selectedPrediction.image_url" alt="Imagen de la predicción" style="width: 100%; height: auto;" />
+            </div>
+        </ng-template>
+    </p-dialog>
 </div>
