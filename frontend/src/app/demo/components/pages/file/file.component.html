@@ -1,6 +1,9 @@
 <p-toast position="top-center" key="confirm" (onClose)="onClose()" [baseZIndex]="5000">
     <ng-template let-message pTemplate="headless" let-closeFn="closeFn">
-        <section class="flex p-3 gap-3 w-full bg-black-alpha-90 shadow-2" style="border-radius: 10px">
+        <section
+            class="flex flex-column sm:flex-row p-3 gap-3 w-full bg-black-alpha-90 shadow-2"
+            style="border-radius: 10px; max-width: 90%; margin: auto;"
+        >
             <i class="pi pi-cloud-upload text-primary-500 text-2xl"></i>
             <div class="flex flex-column gap-3 w-full">
                 <p class="m-0 font-semibold text-base text-white">
@@ -15,7 +18,7 @@
                         {{ progress }}% uploaded...
                     </label>
                 </div>
-                <div class="flex gap-3 mb-3">
+                <div class="flex gap-3 mb-3 justify-content-center sm:justify-content-end">
                     <p-button label="Subir otro archivo?" [text]="true" styleClass="p-0" (onClick)="onClose()" />
                     <p-button label="Cancelar" [text]="true" styleClass="text-white p-0" (onClick)="onClose()" />
                 </div>
@@ -24,36 +27,47 @@
     </ng-template>
 </p-toast>
 
-<!-- Contenedor para el archivo -->
 <div class="card flex justify-content-center">
-    <div class="w-6">
+    <div class="w-11 sm:w-8 lg:w-6">
         <p-accordion [activeIndex]="0">
-            <!-- Sección de carga de archivo -->
             <p-accordionTab header="1. Cargar Archivo">
-                <h2 class="p-mb-4">Cargar Imagen</h2>
-
-                <!-- Componente de carga de archivo -->
-                <p-fileUpload name="file" customUpload="true" (uploadHandler)="onFileUpload($event)"
-                    chooseLabel="Seleccionar Archivo" uploadLabel="Subir" cancelLabel="Cancelar" [auto]="true"
-                    [maxFileSize]="10000000" accept="image/*" />
+                <h2 class="p-mb-4 text-center">Cargar Imagen</h2>
+                <p-fileUpload
+                    name="file"
+                    customUpload="true"
+                    (uploadHandler)="onFileUpload($event)"
+                    chooseLabel="Seleccionar Archivo"
+                    uploadLabel="Subir"
+                    cancelLabel="Cancelar"
+                    [auto]="true"
+                    [maxFileSize]="10000000"
+                    accept="image/*"
+                    class="w-full"
+                />
             </p-accordionTab>
 
-            <!-- Sección de predicciones -->
             <p-accordionTab header="2. Predicciones">
-                <!-- Mostrar las predicciones -->
                 <div *ngIf="predictions.length > 0" class="p-mt-4 predictions-container">
-                    <h3 class="p-mb-3">Predicciones:</h3>
+                    <h3 class="p-mb-3 text-center">Predicciones:</h3>
                     <ul class="p-pl-3">
-                        <li *ngFor="let prediction of predictions" class="prediction-item" class="prediction-item">
-                            <i class="pi pi-check-circle p-mr-2"></i>{{ prediction }}
+                        <li
+                            *ngFor="let prediction of predictions"
+                            class="prediction-item flex align-items-center gap-2"
+                        >
+                            <i class="pi pi-check-circle text-primary-500"></i>{{ prediction }}
                         </li>
                     </ul>
                 </div>
-                <button pButton pRipple icon="pi pi-volume-up" class="p-button-text" (click)="playAudio(audio_Url)">
+                <button
+                    pButton
+                    pRipple
+                    icon="pi pi-volume-up"
+                    class="p-button-text mx-auto sm:mx-0"
+                    (click)="playAudio(audio_Url)"
+                >
                     Reproducir
                 </button>
             </p-accordionTab>
         </p-accordion>
     </div>
 </div>
-<p-toast/>

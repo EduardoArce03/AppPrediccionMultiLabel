@@ -68,11 +68,15 @@ export class VoiceService {
       this.ngZone.run(() => this.router.navigate(['/pages/historial'])); // Redirige usando NgZone
     } else if (command.includes('inicio') || command.includes('principal')) {
       this.ngZone.run(() => this.router.navigate(['/'])); // Redirige usando NgZone
-    } else if (command.includes('predicciones con archivo') || command.includes('predicción con archivo')
+    } else if (command.includes('predicciones con archi vo') || command.includes('predicción con archivo')
       || command.includes('archivo') || command.includes('archivos')) {
       this.ngZone.run(() => this.router.navigate(['/pages/file'])); // Redirige usando NgZone
+    } else if (command.includes('ayuda')) {
+      this.ngZone.run(() => this.router.navigate(['/pages/ayuda'])); // Redirige usando NgZone
     } else if (command.includes('contacto') || command.includes('contactos')) {
       this.ngZone.run(() => this.router.navigate(['/pages/contacto'])); // Redirige usando NgZone
+    } else if (command.includes('acerca de')) {
+      this.ngZone.run(() => this.router.navigate(['/pages/acerca'])); // Redirige usando NgZone
     } else {
       console.warn('Comando no reconocido.');
     }
