@@ -9,6 +9,8 @@ import { VoiceService } from '../../service/voice.service';
         { path: 'historial', loadChildren: () => import ('./historial/historial.module').then(m => m.HistorialModule) },
         { path: 'contacto', loadChildren: () => import ('./contacto/contacto.module').then(m => m.ContactoModule) },
         { path: 'voice', component: VoiceService },
+        { path: 'ayuda', loadChildren: () => import('./ayuda/ayuda.module').then(m => m.AyudaModule) },
+        { path: 'acerca', loadChildren: () => import('./acerca/acerca.module').then(m => m.AcercaModule) },
         { path: '**', redirectTo: '/notfound' }
     ])],
     exports: [RouterModule]

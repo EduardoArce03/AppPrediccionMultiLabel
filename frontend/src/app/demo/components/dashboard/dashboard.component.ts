@@ -13,6 +13,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     items!: MenuItem[];
     recentPredictions: any[] = [];
+    allPredictions: any[] = [];
     products!: Product[];
     chartData: any;
     userId: any;
@@ -33,6 +34,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.initChart();
         this.loadRecentPredictions();
+        this.getAllPredictions();
         this.productService.getProductsSmall().then(data => this.products = data);
         this.loadCategoryData();
 
@@ -180,5 +182,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     viewPrediction(product: any): void {
         this.selectedProduct = product;
         this.displayModal = true;
+    }
+
+    getAllPredictions() {
+        this.predictionService.getAllPredictions().subscribe(
+            (data) => {
+                this.allPredictions = data.predictions;
+            },
+            (error) => {
+                console.error('Error al obtener todas las predicciones:', error);
+            }
+        );
     }
 }

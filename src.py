@@ -221,7 +221,39 @@ def get_predictions():
         return jsonify({'predictions': predictions_data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-    
+# TODAS LAS PREDICCIONES
+
+@app.route('/total-predictions', methods=['GET'])
+def get_all_predictions():
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # Seleccionar todas las predicciones con información del usuario asociado
+            cursor.execute("""
+                SELECT p.image_url, p.predictions, p.timestamp, u.id AS user_id, u.name AS nombre
+                FROM predictions p
+                JOIN users u 
+                ON p.user_id = u.id
+                ORDER BY p.timestamp DESC;
+            """)
+            rows = cursor.fetchall()
+        conn.close()
+
+        predictions_data = [
+            {
+                'image_url': row[0],
+                'predictions': row[1],
+                'timestamp': row[2],
+                'user_id': row[3],
+                'nombre': row[4]
+            } for row in rows
+        ]
+
+        return jsonify({'predictions': predictions_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 # LOGICA DE AUTENTICACION (REGISTRO Y LOGEO)
 
 @app.route('/register', methods=['POST'])

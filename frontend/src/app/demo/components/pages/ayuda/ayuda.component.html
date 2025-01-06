@@ -1,0 +1,69 @@
+<div class="min-h-screen flex justify-content-center align-items-center">
+    <div class="card w-full lg:w-8 p-5">
+        <h1 class="text-center text-3xl font-bold mb-4">Ayuda</h1>
+        <p class="text-center text-lg text-600 mb-4">Aquí encontrarás información sobre cómo utilizar la aplicación.</p>
+
+        <!-- Tabs para organizar la ayuda -->
+        <p-tabView>
+            <!-- Tab 1: Introducción -->
+            <p-tabPanel header="Introducción">
+                <div class="flex flex-column gap-4">
+                    <h2 class="text-2xl font-medium">¿Qué es esta aplicación?</h2>
+                    <p class="text-600">
+                        Esta aplicación te permite capturar imágenes, identificar objetos en ellas utilizando inteligencia artificial, 
+                        y recibir retroalimentación por voz. Además, incluye un historial de predicciones y comandos de voz 
+                        para facilitar la navegación.
+                    </p>
+                </div>
+            </p-tabPanel>
+
+            <!-- Tab 2: Comandos de Voz -->
+            <p-tabPanel header="Comandos de Voz">
+                <div class="flex flex-column gap-4">
+                    <h2 class="text-2xl font-medium">Comandos Disponibles</h2>
+                    <ul class="list-none text-600">
+                        <li><i class="pi pi-microphone text-primary mr-2"></i><strong>"Tomar foto"</strong> - Captura una imagen desde la cámara.</li>
+                        <li><i class="pi pi-microphone text-primary mr-2"></i><strong>"Predecir"</strong> - Realiza predicciones basadas en la imagen actual.</li>
+                        <li><i class="pi pi-microphone text-primary mr-2"></i><strong>"Historial de predicciones"</strong> - Muestra las predicciones anteriores.</li>
+                        <li><i class="pi pi-microphone text-primary mr-2"></i><strong>"Inicio"</strong> - Navega a la página de inicio.</li>
+                        <li><i class="pi pi-microphone text-primary mr-2"></i><strong>"Predicciones con archivo"</strong> - Realiza predicciones cargando un archivo.</li>
+                    </ul>
+                </div>
+            </p-tabPanel>
+
+            <!-- Tab 3: Historial y Configuración -->
+            <p-tabPanel header="Historial y Configuración">
+                <div class="flex flex-column gap-4">
+                    <h2 class="text-2xl font-medium">Historial de Predicciones</h2>
+                    <p class="text-600">
+                        En la sección de historial podrás ver todas las imágenes procesadas, junto con las etiquetas
+                        predichas, la fecha y el audio generado.
+                    </p>
+                    <h2 class="text-2xl font-medium">Configuración</h2>
+                    <p class="text-600">
+                        En la sección de configuración podrás observar como se llevo a cabo el modelo de inteligencia Artificial detras de la aplicacion !
+                    </p>
+                </div>
+            </p-tabPanel>
+
+            <!-- Tab 4: Preguntas Frecuentes -->
+            <p-tabPanel header="Preguntas Frecuentes">
+                <div class="flex flex-column gap-4">
+                    <h2 class="text-2xl font-medium">FAQ</h2>
+                    <div>
+                        <p class="text-lg"><strong>1. ¿Cómo activo los comandos de voz?</strong></p>
+                        <p class="text-600">Haz clic en el botón "Activar Comandos de Voz" en la parte superior derecha de la aplicación.</p>
+                    </div>
+                    <div>
+                        <p class="text-lg"><strong>2. ¿Cómo puedo reproducir los audios generados?</strong></p>
+                        <p class="text-600">En el historial, haz clic en el botón de reproducción junto a cada predicción.</p>
+                    </div>
+                    <div>
+                        <p class="text-lg"><strong>3. ¿Es compatible con todos los navegadores?</strong></p>
+                        <p class="text-600">La mayoría de las funciones están optimizadas para Chrome y Edge. Otros navegadores podrían no soportar los comandos de voz.</p>
+                    </div>
+                </div>
+            </p-tabPanel>
+        </p-tabView>
+    </div>
+</div>

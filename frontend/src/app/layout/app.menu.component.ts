@@ -46,15 +46,15 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Ayuda',
                 items: [
-                    { label: 'Ayuda', icon: 'pi pi-fw pi-question', routerLink: ['/uikit/charts'] }
+                    { label: 'Ayuda', icon: 'pi pi-fw pi-question', routerLink: ['/pages/ayuda'] }
                 ]
             },
-            {
+            /*{
                 label: 'Reportes',
                 items: [
                     { label: 'Reportes', icon: 'pi pi-fw pi-chart-bar', routerLink: ['/uikit/charts'] }
                 ]
-            },
+            },*/
             {
                 label: 'Contacto',
                 items: [
@@ -64,7 +64,7 @@ export class AppMenuComponent implements OnInit {
             {
                 label: 'Acerca de',
                 items: [
-                    { label: 'Acerca de', icon: 'pi pi-fw pi-info-circle', routerLink: ['/uikit/charts'] }
+                    { label: 'Acerca de', icon: 'pi pi-fw pi-info-circle', routerLink: ['/pages/acerca'] }
                 ]
             },
             {
