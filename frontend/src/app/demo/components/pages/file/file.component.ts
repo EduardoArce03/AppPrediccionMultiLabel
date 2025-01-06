@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { PredictService } from 'src/app/demo/service/predict.service';
 import { MessageService } from 'primeng/api';
+import { AuthService } from 'src/app/demo/service/auth.service';
 
 @Component({
   selector: 'app-file',
@@ -14,7 +15,11 @@ export class FileComponent {
   progress: number = 0;
   interval = null;
 
-  constructor(private predictionService: PredictService, private message: MessageService, private cdr: ChangeDetectorRef) { }
+  constructor(private predictionService: PredictService, private message: MessageService, private cdr: ChangeDetectorRef, private auth: AuthService) { }
+
+  ngAfterViewInit(): void {
+    this.verifyAuthState();
+  }
 
   // Este método se llama cuando el archivo se sube
   onFileUpload(event: any): void {
@@ -98,5 +103,10 @@ export class FileComponent {
     audio.play();
     console.log( "xd" , audioUrl);
   }
-  
+
+  verifyAuthState(): void {
+    if (!this.auth.checkLoggedIn()) {
+      this.message.add({ severity: 'info', summary: 'Advertencia', detail: 'Estimado usuario, para poder realizar predicciones debe iniciar sesion.' });
+    }
+  }
 }

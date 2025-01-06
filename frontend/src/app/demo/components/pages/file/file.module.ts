@@ -19,6 +19,7 @@ import { DialogModule } from 'primeng/dialog';
 import { AccordionModule } from 'primeng/accordion';
 import { MessageService } from 'primeng/api';
 import { SelectButtonModule } from 'primeng/selectbutton';
+import { MessageModule } from 'primeng/message';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { SelectButtonModule } from 'primeng/selectbutton';
     InputNumberModule,
     DialogModule,
     AccordionModule,
-    SelectButtonModule
+    SelectButtonModule,
+    MessageModule
   ],
   declarations: [FileComponent],
   providers: [MessageService]

@@ -2,6 +2,7 @@ import { Component, ElementRef, ViewChild, ChangeDetectorRef } from '@angular/co
 import { PredictService } from 'src/app/demo/service/predict.service';
 import { MessageService } from 'primeng/api';
 import { ActivatedRoute } from '@angular/router';
+import { AuthService } from 'src/app/demo/service/auth.service';
 
 @Component({
   selector: 'app-cam',
@@ -26,7 +27,7 @@ export class CamComponent {
   selectedSize: any = '';
 
   constructor(private predictionService: PredictService, private message: MessageService, private cdr: ChangeDetectorRef,
-              private route: ActivatedRoute
+              private route: ActivatedRoute, private auth: AuthService
   ) { }
 
   ngAfterViewInit(): void {
@@ -34,6 +35,8 @@ export class CamComponent {
     navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
       this.videoElement.nativeElement.srcObject = stream;
     });
+
+    this.verifyAuthState();
   }
 
   ngOnInit() {
@@ -146,6 +149,12 @@ export class CamComponent {
         }
         this.cdr.markForCheck();
       }, 1000);
+    }
+  }
+
+  verifyAuthState(): void {
+    if (!this.auth.checkLoggedIn()) {
+      this.message.add({ severity: 'info', summary: 'Advertencia', detail: 'Estimado usuario, para poder realizar predicciones debe iniciar sesion.' });
     }
   }
 }
