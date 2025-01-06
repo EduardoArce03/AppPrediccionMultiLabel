@@ -68,9 +68,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     loadCategoryData() {
-        this.userId = localStorage.getItem('user'); // Replace with dynamic user ID
-        const parsedUser = JSON.parse(this.userId); // Convertir de JSON a objeto
-        const userId = parsedUser.id; // Extraer el campo `id`
+        const userId = localStorage.getItem('user_id') || '2';
         this.predictionService.getRecentPredictions(userId).subscribe(
             (data) => {
                 const predictions = data.predictions;
