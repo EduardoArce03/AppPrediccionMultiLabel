@@ -58,17 +58,19 @@ key="confirm"
 
         <!-- Botones con un diseño atractivo -->
         <div class="button-group p-d-flex p-jc-center p-gap-3">
-            <!-- Botón para capturar la foto -->
+            <button (click)="toggleCamera()" class="p-button p-button-rounded p-button-outlined p-button-secondary">
+                <i class="pi pi-refresh"></i>
+                <span>Cambiar Cámara</span>
+            </button>
             <button (click)="capturePhoto()" class="p-button p-button-rounded p-button-outlined p-button-success">
                 <i class="pi pi-camera"></i>
                 <span>Tomar Foto</span>
             </button>
-            <!-- Botón para enviar la imagen capturada -->
             <button *ngIf="capturedImage" (click)="predictImage()" class="p-button p-button-rounded p-button-info">
                 <i class="pi pi-cloud-upload"></i>
                 <span>Predecir</span>
             </button>
-        </div>
+        </div>        
     </p-accordionTab>
     <p-accordionTab header="2. Imagen Capturada">
             <!-- Mostrar la imagen capturada -->
