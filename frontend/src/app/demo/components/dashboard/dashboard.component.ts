@@ -5,6 +5,7 @@ import { ProductService } from '../../service/product.service';
 import { Subscription, debounceTime } from 'rxjs';
 import { LayoutService } from 'src/app/layout/service/app.layout.service';
 import { PredictionService } from '../../service/prediction.service';
+import { AuthService } from '../../service/auth.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
@@ -23,8 +24,13 @@ export class DashboardComponent implements OnInit, OnDestroy {
     displayModal: boolean = false;
     insufficientData: boolean = false;
     selectedPrediction: any = null; // Almacena la predicción seleccionada
+    user: any = null;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService, private predictionService: PredictionService) {
+    constructor(private productService: ProductService, public layoutService: LayoutService, 
+        private predictionService: PredictionService, private authService: AuthService) {
+        this.authService.isAuthenticated$.subscribe((status) => {
+            this.user = this.authService.getUser();
+        });
         this.subscription = this.layoutService.configUpdate$
             .pipe(debounceTime(25))
             .subscribe((config) => {
@@ -200,4 +206,5 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.selectedPrediction = prediction; // Asigna la predicción seleccionada
         this.displayModal = true; // Abre el diálogo
       }
+      
 }
