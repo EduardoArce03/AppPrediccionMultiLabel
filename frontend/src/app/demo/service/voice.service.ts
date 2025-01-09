@@ -18,41 +18,51 @@ export class VoiceService {
       console.warn('Tu navegador no soporta comandos de voz.');
       return;
     }
-
+  
     this.recognition = new SpeechRecognition();
     this.recognition.lang = 'es-ES';
     this.recognition.interimResults = false;
     this.recognition.maxAlternatives = 1;
     this.recognition.continuous = true;
-
+  
     this.recognition.onresult = (event: any) => {
       const speechResult = event.results[event.results.length - 1][0].transcript.toLowerCase();
       console.log('Texto reconocido:', speechResult);
       this.handleCommand(speechResult);
     };
-
+  
     this.recognition.onerror = (event: any) => {
       console.error('Error en el reconocimiento de voz:', event.error);
+      if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
+        console.warn('El usuario bloqueó el acceso al micrófono o el servicio no está disponible.');
+        this.stopListening();
+      }
     };
-
+  
     this.recognition.onend = () => {
       console.log('Reconocimiento finalizado.');
-      this.isListening = false; // Asegurarte de actualizar el estado
+      this.isListening = false;
+  
+      // Reiniciar el reconocimiento si se detiene inesperadamente
+      if (this.isListening) {
+        console.log('Reiniciando el reconocimiento de voz.');
+        this.startListening();
+      }
     };
-
+  
     this.recognition.start();
     this.isListening = true;
     console.log('Reconocimiento de voz activado.');
   }
-
+  
   stopListening(): void {
     if (this.recognition) {
-      this.recognition.onend = null; // Prevenir reinicio
+      this.isListening = false; // Marcar como detenido antes de llamar a `stop()`
+      this.recognition.onend = null; // Evitar reinicio en `onend`
       this.recognition.stop();
-      this.isListening = false;
       console.log('Reconocimiento de voz desactivado.');
     }
-  }
+  }  
 
   private handleCommand(command: string): void {
     if (command.includes('tomar foto')) {
