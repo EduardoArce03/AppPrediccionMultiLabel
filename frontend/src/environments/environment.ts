@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   //URL PARA EL API DE PRUEBAS
-  apiUrl: 'http://localhost:5000',
+  apiUrl: 'https://172.214.212.144/api',
 };
 
 /*
