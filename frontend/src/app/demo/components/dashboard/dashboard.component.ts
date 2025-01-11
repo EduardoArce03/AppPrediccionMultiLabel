@@ -79,8 +79,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
             (data) => {
                 const predictions = data.predictions;
 
-                console.log("predicciones "+predictions)
-
                 const categoryCounts: { [key: string]: number } = {};
                 let total = 0;
 
@@ -92,12 +90,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     });
                 });
 
-
                 const labels = Object.keys(categoryCounts);
                 const values = Object.values(categoryCounts).map(count => (count / total) * 100);
-
-                
-                console.log("datos" + labels);
 
                 // Manejar el caso de no tener datos
                 if (labels.length === 0) {
@@ -124,6 +118,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
                     plugins: {
                         legend: {
                             position: 'right'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (tooltipItem) {
+                                    // Formatear el valor como porcentaje con el signo %
+                                    return tooltipItem.raw.toFixed(2) + '%';
+                                }
+                            }
                         }
                     }
                 };
