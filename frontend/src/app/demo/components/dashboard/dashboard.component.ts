@@ -9,6 +9,7 @@ import { AuthService } from '../../service/auth.service';
 
 @Component({
     templateUrl: './dashboard.component.html',
+    styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, OnDestroy {
 
@@ -107,7 +108,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         labels: labels,
                         datasets: [{
                             data: values,
-                            backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40']
+                            backgroundColor: [
+                                '#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40', '#40ff7d',
+                                '#bc40ff', '#f6ff40', '#404cff', '#00c40f', '#c40000', '#c49a00',
+                                '#7d40ff', '#ff4040', '#40d0ff', '#ff404c', '#ffac40',
+                                '#40c9ff', '#ff7b40', '#ff00d0', '#d040ff', '#40ffb0',
+                                '#40ff8a', '#ffc140', '#d0ff40', '#ff573f', '#ff7040',
+                                '#40c8ff', '#ff0040', '#6f40ff', '#ff80e0', '#ffbd40',
+                                '#bbff40', '#ff6050', '#40ffd9', '#ff7a40', '#ff40b0'
+                            ]
                         }]
                     };
                 }
@@ -115,14 +124,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
                 // Opciones del gráfico
                 this.chartOptions = {
                     responsive: true,
+                    maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'right'
+                            position: 'right',
+                            labels: {
+                                boxWidth: 6,
+                                padding: 6,
+                                font: {
+                                    size: 11
+                                }
+                            },
                         },
                         tooltip: {
                             callbacks: {
                                 label: function (tooltipItem) {
-                                    // Formatear el valor como porcentaje con el signo %
                                     return tooltipItem.raw.toFixed(2) + '%';
                                 }
                             }

@@ -125,8 +125,8 @@
         </button>-->
         <div class="voice-toggle">
             <button (click)="toggleVoice()" [class.active]="isListening">
-                <span class="off">Off</span>
-                <span class="on">On</span>
+                <span class="off" *ngIf="!isListening">Off</span>
+                <span class="on" *ngIf="isListening">On</span>
             </button>
         </div>
     </div>
