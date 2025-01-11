@@ -35,9 +35,10 @@ export class VoiceService {
 
     this.recognition.onerror = (event: any) => {
       console.error('Error en el reconocimiento de voz:', event.error);
+      this.isListening = false;
+      this.listeningSubject.next(this.isListening);
       if (event.error === 'not-allowed' || event.error === 'service-not-allowed') {
         console.warn('El usuario bloqueó el acceso al micrófono o el servicio no está disponible.');
-        this.isListening = false;
         // Si el micrófono deja de escuchar, muestra la notificación
         // Verifica si el navegador permite notificaciones
         if ('Notification' in window && Notification.permission === 'granted') {

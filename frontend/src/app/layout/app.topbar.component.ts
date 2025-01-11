@@ -34,6 +34,7 @@ export class AppTopBarComponent implements OnInit {
   ngOnInit() {// Suscribirse al estado de escucha
     this.voiceStatusSubscription = this.voiceService.getListeningStatus().subscribe((status: boolean) => {
       this.isListening = status; // Actualizar el estado visual
+      console.log("escucha:"+this.isListening);
     });
     this.authService.isAuthenticated$.subscribe((status) => {
       this.isAuthenticated = status;
