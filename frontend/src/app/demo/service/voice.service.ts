@@ -63,6 +63,8 @@ export class VoiceService {
 
     this.recognition.onend = () => {
       console.log('Reconocimiento finalizado.');
+      this.isListening = false;
+      this.listeningSubject.next(this.isListening);
       // Si el micrófono deja de escuchar, muestra la notificación
       // Verifica si el navegador permite notificaciones
       if ('Notification' in window && Notification.permission === 'granted') {
