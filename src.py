@@ -21,16 +21,16 @@ app.config['MAX_FORM_MEMORY_SIZE'] = 50 * MEGABYTE
 CORS(app)
 
 #PAVLO
-#MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
+MODEL_PATH = "C:/Users/pablo/OneDrive/Documentos/GitHub/AppPrediccionMultiLabel/best_model.keras"
 #MODEL_PATH = "best_model.keras"
-MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
+#MODEL_PATH = "/home/eduardo-arce/Documentos/Inteligencia Artificial/Segundo_Interciclo/Modelos/best_model.keras"
 model = load_model(MODEL_PATH)
 
 # Configuración de categorías (COCO)
 from pycocotools.coco import COCO
-#ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
+ANNOTATIONS_FILE = "C:/Users/pablo/Downloads/annotations_trainval2017/annotations/instances_train2017.json"
 #ANNOTATIONS_FILE = "C:/Users/dcpor/Downloads/annotations/instances_train2017.json"
-ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
+#ANNOTATIONS_FILE = "/home/eduardo-arce/Descargas/annotations_trainval2017/annotations/instances_train2017.json"
 coco = COCO(ANNOTATIONS_FILE)
 categories = coco.loadCats(coco.getCatIds())
 
@@ -38,9 +38,9 @@ categories = coco.loadCats(coco.getCatIds())
 category_id_to_index = {cat['id']: idx for idx, cat in enumerate(categories)}
 
 #PASS PAVLO
-#password = "admin"
+password = "admin"
 #PASS EDU
-password = "edu123"
+#password = "edu123"
 #password = "postgres"
 
 # Función para conectarse a la base de datos
@@ -170,7 +170,7 @@ def get_recent_predictions():
                 WHERE p.user_id = %s
                 ORDER BY p.timestamp DESC
                 LIMIT 10;
-            """, (user_id))
+            """, (user_id,))
             rows = cursor.fetchall()
         conn.close()
 
@@ -205,7 +205,7 @@ def get_predictions():
                 ON p.user_id = u.id
                 WHERE p.user_id = %s
                 ORDER BY p.timestamp DESC;
-            """, (user_id))
+            """, (user_id,))
             rows = cursor.fetchall()
         conn.close()
 
@@ -221,7 +221,39 @@ def get_predictions():
         return jsonify({'predictions': predictions_data})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
-# TODAS LAS PREDICCIONES
+
+@app.route('/graphic-predictions', methods=['GET'])
+def get_graphic_predictions():
+    user_id = request.args.get('user_id')  # Obtener user_id desde los parámetros GET
+
+    if not user_id:
+        return jsonify({'error': 'user_id es requerido'}), 400
+
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # Seleccionar las predicciones recientes del usuario autenticado
+            cursor.execute("""
+                SELECT p.predictions
+                FROM predictions p
+                JOIN users u 
+                ON p.user_id = u.id
+                WHERE p.user_id = %s
+                ORDER BY p.timestamp DESC;
+            """, (user_id,))
+            rows = cursor.fetchall()
+        conn.close()
+
+        # Procesar los datos
+        predictions_data = [
+            {
+                'predictions': row[0].split(', ')  # Convertir la cadena en una lista
+            } for row in rows
+        ]
+
+        return jsonify({'predictions': predictions_data})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/total-predictions', methods=['GET'])
 def get_all_predictions():

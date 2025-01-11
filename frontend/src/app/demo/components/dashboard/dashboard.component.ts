@@ -26,7 +26,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     selectedPrediction: any = null; // Almacena la predicción seleccionada
     user: any = null;
 
-    constructor(private productService: ProductService, public layoutService: LayoutService, 
+    constructor(private productService: ProductService, public layoutService: LayoutService,
         private predictionService: PredictionService, private authService: AuthService) {
         this.authService.isAuthenticated$.subscribe((status) => {
             this.user = this.authService.getUser();
@@ -59,46 +59,66 @@ export class DashboardComponent implements OnInit, OnDestroy {
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
         this.chartData = {
-            
+            labels: [],
+            datasets: [
+                {
+                    data: [],
+                    backgroundColor: []
+                }
+            ]
         };
 
         this.chartOptions = {
-            
+
         };
     }
 
     loadCategoryData() {
-        const userId = localStorage.getItem('user_id') || '2';
-        this.predictionService.getRecentPredictions(userId).subscribe(
+        const userId = localStorage.getItem('user_id') || '1';
+        this.predictionService.getPredictionsGrafico(userId).subscribe(
             (data) => {
                 const predictions = data.predictions;
 
-                if (predictions.length === 0) {
-                    this.insufficientData = true;
-                    return;
-                }
+                console.log("predicciones "+predictions)
 
                 const categoryCounts: { [key: string]: number } = {};
                 let total = 0;
 
+                // Procesar las predicciones como listas
                 predictions.forEach(prediction => {
-                    prediction.predictions.split(', ').forEach(category => {
+                    prediction.predictions.forEach((category: string) => {
                         categoryCounts[category] = (categoryCounts[category] || 0) + 1;
                         total++;
                     });
                 });
 
+
                 const labels = Object.keys(categoryCounts);
                 const values = Object.values(categoryCounts).map(count => (count / total) * 100);
 
-                this.chartData = {
-                    labels: labels,
-                    datasets: [{
-                        data: values,
-                        backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40']
-                    }]
-                };
+                
+                console.log("datos" + labels);
 
+                // Manejar el caso de no tener datos
+                if (labels.length === 0) {
+                    this.chartData = {
+                        labels: ['Sin datos'],
+                        datasets: [{
+                            data: [100], // Representar todo como "Sin datos"
+                            backgroundColor: ['#d3d3d3'] // Color gris para "Sin datos"
+                        }]
+                    };
+                } else {
+                    this.chartData = {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0', '#FF9F40']
+                        }]
+                    };
+                }
+
+                // Opciones del gráfico
                 this.chartOptions = {
                     responsive: true,
                     plugins: {
@@ -107,16 +127,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
                         }
                     }
                 };
-                console.log('Predictions:', predictions);
-                console.log('Chart Labels:', labels);
-                console.log('Chart Values:', values);
             },
             (error) => {
                 console.error('Error fetching predictions:', error);
                 this.insufficientData = true;
             }
         );
-
     }
 
     ngOnDestroy() {
@@ -160,6 +176,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     showDetails(prediction: any): void {
         this.selectedPrediction = prediction; // Asigna la predicción seleccionada
         this.displayModal = true; // Abre el diálogo
-      }
-      
+    }
+
 }

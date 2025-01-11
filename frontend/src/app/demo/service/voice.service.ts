@@ -85,7 +85,7 @@ export class VoiceService {
       this.ngZone.run(() => this.router.navigate(['/pages/ayuda'])); // Redirige usando NgZone
     } else if (command.includes('contacto') || command.includes('contactos')) {
       this.ngZone.run(() => this.router.navigate(['/pages/contacto'])); // Redirige usando NgZone
-    } else if (command.includes('acerca de')) {
+    } else if (command.includes('acerca de') || command.includes('acerca')) {
       this.ngZone.run(() => this.router.navigate(['/pages/acerca'])); // Redirige usando NgZone
     } else {
       console.warn('Comando no reconocido.');

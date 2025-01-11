@@ -1,10 +1,35 @@
 .p-button-icon-only {
-    background-color: #4caf50; /* Verde para indicar acción positiva */
-    color: white;
-    border-radius: 50%;
-  }
-  
-  .p-button-icon-only:hover {
-    background-color: #45a049;
-  }
-  
+  background-color: #4caf50;
+  /* Verde para indicar acción positiva */
+  color: white;
+  border-radius: 50%;
+}
+
+.p-button-icon-only:hover {
+  background-color: #45a049;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  /* Centrar horizontalmente */
+  margin-bottom: 20px;
+  /* Espaciado inferior */
+}
+
+.p-button-lg {
+  padding: 0.75rem 2rem;
+  /* Espaciado interno para mejor proporción */
+}
+
+.p-button-primary {
+  background-color: #3f51b5;
+  /* Azul primario */
+  border-color: #3f51b5;
+}
+
+.p-button-primary:hover {
+  background-color: #303f9f;
+  /* Azul más oscuro en hover */
+  border-color: #303f9f;
+}
